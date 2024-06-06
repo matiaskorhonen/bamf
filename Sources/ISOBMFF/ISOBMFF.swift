@@ -1,12 +1,12 @@
 import Foundation
 
-struct MP4File {
+struct ISOBMFF {
   let data: Data
   let children: [Atom]
 
   init(_ url: URL) {
     self.data = try! Data(contentsOf: url, options: .alwaysMapped)
-    children = MP4File.parse(self.data)
+    children = ISOBMFF.parse(self.data)
   }
 
   static func parse(_ data: Data) -> [Atom] {

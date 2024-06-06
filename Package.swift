@@ -4,12 +4,12 @@
 import PackageDescription
 
 let package = Package(
-  name: "MP4File",
+  name: "ISOBMFF",
   products: [
     // Products define the executables and libraries a package produces, making them visible to other packages.
     .library(
-      name: "MP4File",
-      targets: ["MP4File"])
+      name: "ISOBMFF",
+      targets: ["ISOBMFF"])
 
   ],
   dependencies: [
@@ -19,11 +19,11 @@ let package = Package(
     // Targets are the basic building blocks of a package, defining a module or a test suite.
     // Targets can depend on other targets in this package and products from dependencies.
     .target(
-      name: "MP4File"),
+      name: "ISOBMFF"),
     .testTarget(
-      name: "MP4FileTests",
+      name: "ISOBMFFTests",
       dependencies: [
-        "MP4File",
+        "ISOBMFF",
         .product(name: "Testing", package: "swift-testing"),
       ],
       resources: [

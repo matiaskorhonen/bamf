@@ -1,7 +1,7 @@
 import Foundation
 import Testing
 
-@testable import MP4File
+@testable import ISOBMFF
 
 // Test compatibility with test files from ExifTool
 @Suite struct ExifToolTests {
@@ -12,7 +12,7 @@ import Testing
     #expect(urls!.count == 1)
 
     for url in urls! {
-      let mp4 = MP4File(url)
+      let mp4 = ISOBMFF(url)
       #expect(mp4.children.count > 0)
     }
   }
@@ -24,7 +24,7 @@ import Testing
     #expect(urls!.count == 1)
 
     for url in urls! {
-      let mp4 = MP4File(url)
+      let mp4 = ISOBMFF(url)
       #expect(mp4.children.count > 0)
     }
   }
@@ -36,7 +36,7 @@ import Testing
     #expect(urls!.count == 1)
 
     for url in urls! {
-      let mp4 = MP4File(url)
+      let mp4 = ISOBMFF(url)
       #expect(mp4.children.count > 0)
     }
   }
@@ -48,7 +48,7 @@ import Testing
     #expect(urls!.count == 1)
 
     for url in urls! {
-      let mp4 = MP4File(url)
+      let mp4 = ISOBMFF(url)
       #expect(mp4.children.count > 0)
     }
   }

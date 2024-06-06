@@ -10,7 +10,7 @@ extension Atom {
       data: Data
     ) {
       super.init(data: data)
-      self.children = MP4File.parse(data[(data.startIndex + 8)..<data.endIndex])
+      self.children = ISOBMFF.parse(data[(data.startIndex + 8)..<data.endIndex])
     }
   }
 }
