@@ -19,7 +19,7 @@ import Testing
   @Test func quicktime() {
     let urls = Bundle.module.urls(forResourcesWithExtension: "MOV", subdirectory: nil)
 
-    #expect(urls != nil, "there should be test MP4 files in the test bundle")
+    #expect(urls != nil, "there should be test MOV files in the test bundle")
     #expect(urls!.count == 1)
 
     for url in urls! {
