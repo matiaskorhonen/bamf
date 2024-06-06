@@ -14,9 +14,19 @@ jobs:
     steps:
     - uses: swift-actions/setup-swift@v2.0.0
     - uses: actions/checkout@v4
+    - name: Set-up Git
+      run: git lfs install --local
+    - name: LFS cache
+      uses: actions/cache@v4
       with:
-        lfs: true
-    - uses: actions/cache@v4
+        path: Tests/**/Resources
+        key: lfs-resources-${{ hashFiles('Tests/**/Resources/*') }}
+        restore-keys: |
+          lfs-resources-
+    - name: Fetch LFS files
+      run: git lfs fetch
+    - name: Build cache
+      uses: actions/cache@v4
       with:
         path: .build
         key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
