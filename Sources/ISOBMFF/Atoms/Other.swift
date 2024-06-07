@@ -73,6 +73,14 @@ extension Atom {
     }
   }
   class Unknown: Atom, WithDataInit {
+    var stringValue: String? {
+      String(data: data, encoding: .utf8)
+    }
+
+    override var debugDescription: String {
+      "Atom(type=\(type), stringValue=\(stringValue ?? "nil"))"
+    }
+
     required init(data: Data) {
       super.init(data: data, type: .unknown("TODO"))
     }

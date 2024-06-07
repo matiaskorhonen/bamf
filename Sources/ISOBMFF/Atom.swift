@@ -21,10 +21,8 @@ class Atom: CustomDebugStringConvertible {
     self.type = type
   }
 
-  static func from(data: Data) -> Atom {
-    let atomType = parseAtomType(from: data)
-
-    switch atomType {
+  static func from(type: AtomType, data: Data) -> Atom {
+    switch type {
     case .ftyp:
       return FTYP(data: data)
     case .mdat:
@@ -70,8 +68,24 @@ class Atom: CustomDebugStringConvertible {
     case .udta:
       return UDTA(data: data)
     case .unknown:
-      return Unknown(data: data, type: atomType)
+      return Unknown(data: data, type: type)
     }
+  }
+
+  static func atomType(from typeBytes: Data) -> AtomType {
+    guard let typeStr = String(data: typeBytes, encoding: .macOSRoman) else {
+      return .unknown("[\(typeBytes.hex)]")
+    }
+
+    return atomType(from: typeStr)
+  }
+
+  static func atomType(from typeStr: String) -> AtomType {
+    guard let type = AtomType.allCases.first(where: { String(describing: $0) == typeStr }) else {
+      return .unknown(typeStr)
+    }
+
+    return type
   }
 
   static func parseAtomType(from data: Data) -> AtomType {
