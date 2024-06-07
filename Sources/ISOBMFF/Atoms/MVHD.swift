@@ -14,32 +14,25 @@ extension Atom {
       ]
     }
     var creationTime: Date {
-      let timeBytes = [UInt8](data[(data.startIndex + 4)..<(data.startIndex + 8)])
-      let time = timeBytes.reduce(0) { soFar, byte in
-        return soFar << 8 | UInt32(byte)
-      }
+      let timeBytes = data[(data.startIndex + 4)..<(data.startIndex + 8)]
+      let time: UInt32 = timeBytes.asInteger()
 
       // The difference between the Unix timestamp epoch (1970) and the Mac
       // timestamp epoch (1904) is 2082844800 seconds
       return Date(timeIntervalSince1970: TimeInterval(time - 2_082_844_800))
     }
     var modificationTime: Date {
-      let timeBytes = [UInt8](data[(data.startIndex + 8)..<(data.startIndex + 12)])
+      let timeBytes = data[(data.startIndex + 8)..<(data.startIndex + 12)]
 
-      let time = timeBytes.reduce(0) { soFar, byte in
-        return soFar << 8 | UInt32(byte)
-      }
+      let time: UInt32 = timeBytes.asInteger()
 
       // The difference between the Unix timestamp epoch (1970) and the Mac
       // timestamp epoch (1904) is 2082844800 seconds
       return Date(timeIntervalSince1970: TimeInterval(time - 2_082_844_800))
     }
     var timeScale: UInt32 {
-      let bytes = [UInt8](data[(data.startIndex + 12)..<(data.startIndex + 16)])
-
-      return bytes.reduce(0) { soFar, byte in
-        return soFar << 8 | UInt32(byte)
-      }
+      let bytes = data[(data.startIndex + 12)..<(data.startIndex + 16)]
+      return bytes.asInteger()
     }
     var duration: UInt32 {
       let bytes = [UInt8](data[(data.startIndex + 16)..<(data.startIndex + 20)])
