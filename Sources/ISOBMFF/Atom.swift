@@ -27,7 +27,11 @@ class Atom: CustomDebugStringConvertible {
       return FTYP(data: data)
     case .mdat:
       return MDAT(data: data)
-    case .wide, .free, .skip:
+    case .wide:
+      return WIDE(data: data)
+    case .free:
+      return FREE(data: data)
+    case .skip:
       return SKIP(data: data)
     case .mdhd:
       return MDHD(data: data)
