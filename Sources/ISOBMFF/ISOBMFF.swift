@@ -46,6 +46,9 @@ struct ISOBMFF {
       let atom = Atom.from(type: atomType, data: atomData)
 
       atoms.append(atom)
+      // if atom.data.count < 128 {
+      //   print("Atom: \(atom.type) \(atom.data.base64EncodedString())")
+      // }
 
       cursor += Int(size)
     }

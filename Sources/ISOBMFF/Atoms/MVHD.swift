@@ -1,6 +1,7 @@
 import Foundation
 
 extension Atom {
+  // https://xhelmboyx.tripod.com/formats/mp4-layout.txt
   class MVHD: Atom, WithDataInit {
     var version: UInt8 {
       return UInt8(data[data.startIndex + 0])
@@ -34,16 +35,58 @@ extension Atom {
       return Date(timeIntervalSince1970: TimeInterval(time - 2_082_844_800))
     }
     var timeScale: UInt32 {
-      return 0
+      let bytes = [UInt8](data[(data.startIndex + 12)..<(data.startIndex + 16)])
+
+      return bytes.reduce(0) { soFar, byte in
+        return soFar << 8 | UInt32(byte)
+      }
     }
     var duration: UInt32 {
-      return 0
+      let bytes = [UInt8](data[(data.startIndex + 16)..<(data.startIndex + 20)])
+
+      return bytes.reduce(0) { soFar, byte in
+        return soFar << 8 | UInt32(byte)
+      }
     }
-    var preferredRate: UInt32 {
-      return 0
+    var preferredRate: Decimal {
+      let integerBytes = [UInt8](data[(data.startIndex + 20)..<(data.startIndex + 22)])
+      let fractionBytes = [UInt8](data[(data.startIndex + 22)..<(data.startIndex + 24)])
+
+      var integer = integerBytes.reduce(0) { soFar, byte in
+        return soFar << 8 | Int(byte)
+      }
+      let fraction = fractionBytes.reduce(0) { soFar, byte in
+        return soFar << 8 | Int(byte)
+      }
+
+      if integer > (Int(UInt8.max) + 1) / 2 {
+        integer -= (Int(UInt8.max) + 1)
+      }
+
+      var decimal = Decimal(integer)
+      decimal += (1 / 65536) * Decimal(fraction)
+
+      return decimal
     }
-    var preferredVolume: Float {
-      return 0
+    var preferredVolume: Decimal {
+      let integerBytes = [UInt8](data[(data.startIndex + 22)..<(data.startIndex + 23)])
+      let fractionBytes = [UInt8](data[(data.startIndex + 23)..<(data.startIndex + 24)])
+
+      var integer = integerBytes.reduce(0) { soFar, byte in
+        return soFar << 8 | Int(byte)
+      }
+      let fraction = fractionBytes.reduce(0) { soFar, byte in
+        return soFar << 8 | Int(byte)
+      }
+
+      if integer > (Int(UInt8.max) + 1) / 2 {
+        integer -= (Int(UInt8.max) + 1)
+      }
+
+      var decimal = Decimal(integer)
+      decimal += (1 / 65536) * Decimal(fraction)
+
+      return decimal
     }
     var nextTrackID: UInt32 {
       return 0

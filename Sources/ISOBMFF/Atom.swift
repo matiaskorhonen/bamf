@@ -4,7 +4,7 @@ protocol WithDataInit {
   init(data: Data)
 }
 
-class Atom: CustomDebugStringConvertible {
+public class Atom: CustomDebugStringConvertible {
   let type: AtomType
   let data: Data
   var binary: Bool = false
@@ -12,7 +12,7 @@ class Atom: CustomDebugStringConvertible {
 
   var children: [Atom] = []
 
-  var debugDescription: String {
+  public var debugDescription: String {
     "Atom(type=\(type), children=\(children.count))"
   }
 
