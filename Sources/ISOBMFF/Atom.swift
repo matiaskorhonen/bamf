@@ -1,5 +1,9 @@
 import Foundation
 
+protocol WithDataInit {
+  init(data: Data)
+}
+
 class Atom: CustomDebugStringConvertible {
   let type: AtomType
   let data: Data
@@ -12,9 +16,9 @@ class Atom: CustomDebugStringConvertible {
     "Atom(type=\(type), children=\(children.count))"
   }
 
-  init(data: Data) {
+  init(data: Data, type: AtomType) {
     self.data = data
-    self.type = Atom.parseAtomType(from: data)
+    self.type = type
   }
 
   static func from(data: Data) -> Atom {
@@ -66,9 +70,7 @@ class Atom: CustomDebugStringConvertible {
     case .udta:
       return UDTA(data: data)
     case .unknown:
-      return Unknown(data: data)
-    case .userDataItem:
-      return UserDataItem(data: data)
+      return Unknown(data: data, type: atomType)
     }
   }
 
@@ -77,8 +79,8 @@ class Atom: CustomDebugStringConvertible {
     let typeStr = String(data: typeBytes, encoding: .macOSRoman) ?? "unknown"
     let type =
       AtomType.allCases.first(where: { String(describing: $0) == typeStr })
-      ?? .userDataItem(typeStr)
+      ?? .unknown(typeStr)
 
-    return type
+    return (type)
   }
 }

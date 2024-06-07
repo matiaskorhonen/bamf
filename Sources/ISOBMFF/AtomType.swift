@@ -80,6 +80,5 @@ enum AtomType: CaseIterable {
   case udta
 
   // Unrecognized atom type
-  case userDataItem(String)
   case unknown(String)
 }

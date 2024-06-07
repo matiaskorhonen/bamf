@@ -1,15 +1,13 @@
 import Foundation
 
 extension Atom {
-  class MOOV: Atom {
+  class MOOV: Atom, WithDataInit {
     override var debugDescription: String {
       "Atom(type=\(type), children=\(children.count))"
     }
 
-    override init(
-      data: Data
-    ) {
-      super.init(data: data)
+    required init(data: Data) {
+      super.init(data: data, type: .moov)
       self.children = ISOBMFF.parse(data[(data.startIndex + 8)..<data.endIndex])
     }
   }

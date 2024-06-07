@@ -1,7 +1,7 @@
 import Foundation
 
 extension Atom {
-  class TKHD: Atom {
+  class TKHD: Atom, WithDataInit {
     var version: UInt8 {
       return UInt8(data[data.startIndex + 8])
     }
@@ -85,6 +85,10 @@ extension Atom {
           height=\(height)
         )
         """
+    }
+
+    required init(data: Data) {
+      super.init(data: data, type: .tkhd)
     }
   }
 }

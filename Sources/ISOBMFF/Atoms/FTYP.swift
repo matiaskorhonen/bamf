@@ -1,7 +1,7 @@
 import Foundation
 
 extension Atom {
-  class FTYP: Atom {
+  class FTYP: Atom, WithDataInit {
     var majorBrand: String? {
       let bytes = data[(data.startIndex + 8)..<(data.startIndex + 12)]
       return String(data: bytes, encoding: .utf8)
@@ -38,6 +38,10 @@ extension Atom {
           compatibleBrands=\(compatibleBrands)
         )
         """
+    }
+
+    required init(data: Data) {
+      super.init(data: data, type: .ftyp)
     }
   }
 }

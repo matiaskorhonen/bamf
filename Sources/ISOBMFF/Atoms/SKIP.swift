@@ -1,13 +1,9 @@
 import Foundation
 
 extension Atom {
-  class SKIP: Atom {
-    override init(
-      data: Data
-    ) {
-      super.init(data: data)
-      self.binary = true
-      self.unknown = true
+  class SKIP: Atom, WithDataInit {
+    required init(data: Data) {
+      super.init(data: data, type: .skip)
     }
   }
 }

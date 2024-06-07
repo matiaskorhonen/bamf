@@ -1,7 +1,7 @@
 import Foundation
 
 extension Atom {
-  class MVHD: Atom {
+  class MVHD: Atom, WithDataInit {
     var version: UInt8 {
       return UInt8(data[data.startIndex + 8])
     }
@@ -65,6 +65,10 @@ extension Atom {
           nextTrackID=\(nextTrackID)
         )
         """
+    }
+
+    required init(data: Data) {
+      super.init(data: data, type: .mvhd)
     }
   }
 }
