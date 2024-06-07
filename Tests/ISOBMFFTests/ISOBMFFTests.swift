@@ -11,8 +11,8 @@ import Testing
     #expect(urls!.count == 4)
 
     for url in urls! {
-      let mp4 = ISOBMFF(url)
-      #expect(mp4.children.count > 0)
+      let isobmff = ISOBMFF(url)
+      #expect(isobmff.children.count > 0)
     }
   }
 
@@ -23,8 +23,8 @@ import Testing
     #expect(urls!.count == 1)
 
     for url in urls! {
-      let mp4 = ISOBMFF(url)
-      #expect(mp4.children.count > 0)
+      let isobmff = ISOBMFF(url)
+      #expect(isobmff.children.count > 0)
     }
   }
 }
