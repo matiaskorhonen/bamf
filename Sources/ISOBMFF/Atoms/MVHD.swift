@@ -35,11 +35,7 @@ extension Atom {
       return bytes.asInteger()
     }
     var duration: UInt32 {
-      let bytes = [UInt8](data[(data.startIndex + 16)..<(data.startIndex + 20)])
-
-      return bytes.reduce(0) { soFar, byte in
-        return soFar << 8 | UInt32(byte)
-      }
+      return data[(data.startIndex + 16)..<(data.startIndex + 20)].asInteger()
     }
     var preferredRate: Decimal {
       let integerBytes = [UInt8](data[(data.startIndex + 20)..<(data.startIndex + 22)])

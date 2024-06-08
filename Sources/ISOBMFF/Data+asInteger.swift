@@ -5,7 +5,7 @@ extension Data {
     let bytes = [UInt8](self)
 
     let bits = (bytes.count * UInt8.bitWidth)
-    guard T.bitWidth == bits else {
+    guard T.bitWidth >= bits else {
       fatalError("Cannot convert \(bits) bits to \(T.bitWidth)-bit integer")
     }
 
