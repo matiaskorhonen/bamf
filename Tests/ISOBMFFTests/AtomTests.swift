@@ -25,7 +25,7 @@ import Testing
     #expect(atom.timeScale == 1000)
     #expect(atom.duration == 2628)
     #expect(atom.preferredRate == 1.0)
-    #expect(atom.preferredVolume == 0)
+    #expect(atom.preferredVolume == 1.0)
     // #expect(atom.nextTrackID == 0)
   }
 }

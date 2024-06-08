@@ -38,44 +38,10 @@ extension Atom {
       return data[(data.startIndex + 16)..<(data.startIndex + 20)].asInteger()
     }
     var preferredRate: Decimal {
-      let integerBytes = [UInt8](data[(data.startIndex + 20)..<(data.startIndex + 22)])
-      let fractionBytes = [UInt8](data[(data.startIndex + 22)..<(data.startIndex + 24)])
-
-      var integer = integerBytes.reduce(0) { soFar, byte in
-        return soFar << 8 | Int(byte)
-      }
-      let fraction = fractionBytes.reduce(0) { soFar, byte in
-        return soFar << 8 | Int(byte)
-      }
-
-      if integer > (Int(UInt8.max) + 1) / 2 {
-        integer -= (Int(UInt8.max) + 1)
-      }
-
-      var decimal = Decimal(integer)
-      decimal += (1 / 65536) * Decimal(fraction)
-
-      return decimal
+      return data[(data.startIndex + 20)..<(data.startIndex + 24)].asFixedPoint(2, 2)
     }
     var preferredVolume: Decimal {
-      let integerBytes = [UInt8](data[(data.startIndex + 22)..<(data.startIndex + 23)])
-      let fractionBytes = [UInt8](data[(data.startIndex + 23)..<(data.startIndex + 24)])
-
-      var integer = integerBytes.reduce(0) { soFar, byte in
-        return soFar << 8 | Int(byte)
-      }
-      let fraction = fractionBytes.reduce(0) { soFar, byte in
-        return soFar << 8 | Int(byte)
-      }
-
-      if integer > (Int(UInt8.max) + 1) / 2 {
-        integer -= (Int(UInt8.max) + 1)
-      }
-
-      var decimal = Decimal(integer)
-      decimal += (1 / 65536) * Decimal(fraction)
-
-      return decimal
+      return data[(data.startIndex + 24)..<(data.startIndex + 26)].asFixedPoint(1, 1)
     }
     var nextTrackID: UInt32 {
       return 0
