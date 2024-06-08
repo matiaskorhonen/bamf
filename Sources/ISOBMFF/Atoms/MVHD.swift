@@ -23,7 +23,6 @@ extension Atom {
     }
     var modificationTime: Date {
       let timeBytes = data[(data.startIndex + 8)..<(data.startIndex + 12)]
-
       let time: UInt32 = timeBytes.asInteger()
 
       // The difference between the Unix timestamp epoch (1970) and the Mac

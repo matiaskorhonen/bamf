@@ -14,11 +14,7 @@ struct ISOBMFF {
     var atoms: [Atom] = []
 
     while cursor < data.endIndex {
-      let sizeBytes = [UInt8](data[cursor..<(cursor + 4)])
-
-      var size = sizeBytes.reduce(0) { soFar, byte in
-        return soFar << 8 | UInt64(byte)
-      }
+      var size: UInt64 = data[cursor..<(cursor + 4)].asInteger()
 
       // https://github.com/corkami/formats/blob/master/container/mp4.md
       var dataStartIndex = cursor + 8  // Skip the size and type fields
@@ -29,10 +25,7 @@ struct ISOBMFF {
         dataEndIndex = data.endIndex
       } else if size == 1 {
         // Size = 1 → extended size
-        let extendedSizeBytes = [UInt8](data[(cursor + 8)..<(cursor + 16)])
-        size = extendedSizeBytes.reduce(0) { soFar, byte in
-          return soFar << 8 | UInt64(byte)
-        }
+        size = data[(cursor + 8)..<(cursor + 16)].asInteger()
         dataStartIndex = cursor + 16
         dataEndIndex = cursor + Int(size)
       }
