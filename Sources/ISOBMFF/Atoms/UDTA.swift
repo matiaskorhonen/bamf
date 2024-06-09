@@ -5,7 +5,7 @@ extension Atom {
     // https://developer.apple.com/documentation/quicktime-file-format/user_data_atom
     // https://developer.apple.com/documentation/quicktime-file-format/user_data_atoms
     var userData: [Atom] {
-      return ISOBMFF.parse(data[data.startIndex..<data.endIndex])
+      return try! ISOBMFF.parse(data[data.startIndex..<data.endIndex])
     }
 
     override var debugDescription: String {

@@ -8,7 +8,7 @@ extension Atom {
 
     required init(data: Data) {
       super.init(data: data, type: .trak)
-      self.children = ISOBMFF.parse(data[(data.startIndex)..<data.endIndex])
+      self.children = try! ISOBMFF.parse(data[(data.startIndex)..<data.endIndex])
     }
   }
 }

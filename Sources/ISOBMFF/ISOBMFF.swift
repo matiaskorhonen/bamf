@@ -1,15 +1,18 @@
 import Foundation
 
 struct ISOBMFF {
+  enum Error: Swift.Error {
+    case invalidAtomSize(String)
+  }
   let data: Data
   let children: [Atom]
 
   init(_ url: URL) {
     self.data = try! Data(contentsOf: url, options: .alwaysMapped)
-    children = ISOBMFF.parse(self.data)
+    children = try! ISOBMFF.parse(self.data)
   }
 
-  static func parse(_ data: Data) -> [Atom] {
+  static func parse(_ data: Data) throws -> [Atom] {
     var cursor: Int = data.startIndex
     var atoms: [Atom] = []
 
@@ -30,6 +33,11 @@ struct ISOBMFF {
         dataEndIndex = cursor + Int(size)
       }
 
+      guard size >= 8 else {
+        print("Invalid atom size: \(size)")
+        throw Error.invalidAtomSize("Invalid atom size \(size) at offset \(cursor)")
+      }
+
       // Get the atom type
       let atomType = Atom.atomType(from: Data(data[(cursor + 4)..<(cursor + 8)]))
 
@@ -39,9 +47,6 @@ struct ISOBMFF {
       let atom = Atom.from(type: atomType, data: atomData)
 
       atoms.append(atom)
-      // if atom.data.count < 128 {
-      //   print("Atom: \(atom.type) \(atom.data.base64EncodedString())")
-      // }
 
       cursor += Int(size)
     }
