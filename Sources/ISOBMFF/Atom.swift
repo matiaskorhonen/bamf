@@ -7,8 +7,6 @@ protocol WithDataInit {
 public class Atom: CustomDebugStringConvertible {
   let type: AtomType
   let data: Data
-  var binary: Bool = false
-  var unknown: Bool = false
 
   var children: [Atom] = []
 
