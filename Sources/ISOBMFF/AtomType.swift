@@ -80,5 +80,5 @@ enum AtomType: CaseIterable {
   case udta
 
   // Unrecognized atom type
-  case unknown(String)
+  case unknown(type: String)
 }

@@ -82,7 +82,7 @@ extension Atom {
     }
 
     required init(data: Data) {
-      super.init(data: data, type: .unknown("TODO"))
+      super.init(data: data, type: .unknown(type: "TODO"))
     }
 
     override init(data: Data, type: AtomType) {

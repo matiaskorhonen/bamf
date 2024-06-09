@@ -78,7 +78,7 @@ public class Atom: CustomDebugStringConvertible {
 
   static func atomType(from typeBytes: Data) -> AtomType {
     guard let typeStr = String(data: typeBytes, encoding: .macOSRoman) else {
-      return .unknown("[\(typeBytes.hex)]")
+      return .unknown(type: "[\(typeBytes.hex)]")
     }
 
     return atomType(from: typeStr)
@@ -86,7 +86,7 @@ public class Atom: CustomDebugStringConvertible {
 
   static func atomType(from typeStr: String) -> AtomType {
     guard let type = AtomType.allCases.first(where: { String(describing: $0) == typeStr }) else {
-      return .unknown(typeStr)
+      return .unknown(type: typeStr)
     }
 
     return type
@@ -96,11 +96,11 @@ public class Atom: CustomDebugStringConvertible {
     let typeBytes = data[(data.startIndex + 4)..<(data.startIndex + 8)]
 
     guard let typeStr = String(data: typeBytes, encoding: .macOSRoman) else {
-      return .unknown("[\(typeBytes.hex)]")
+      return .unknown(type: "[\(typeBytes.hex)]")
     }
 
     guard let type = AtomType.allCases.first(where: { String(describing: $0) == typeStr }) else {
-      return .unknown(typeStr)
+      return .unknown(type: typeStr)
     }
 
     return type
