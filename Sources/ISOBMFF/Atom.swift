@@ -4,9 +4,11 @@ protocol WithDataInit {
   init(data: Data)
 }
 
-public class Atom: CustomDebugStringConvertible {
+public class Atom: Encodable, CustomDebugStringConvertible {
   let type: AtomType
-  let data: Data
+
+  @CodableIgnored
+  var data: Data!
 
   var children: [Atom] = []
 

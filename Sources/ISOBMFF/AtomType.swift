@@ -4,7 +4,7 @@ import Foundation
 // * https://github.com/corkami/formats/blob/master/container/mp4.md
 // * https://www.cimarronsystems.com/wp-content/uploads/2017/04/Elements-of-the-H.264-VideoAAC-Audio-MP4-Movie-v2_0.pdf
 
-enum AtomType: CaseIterable {
+enum AtomType: CaseIterable, Encodable {
   static var allCases: [AtomType] {
     return [
       .ftyp,

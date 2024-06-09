@@ -1,15 +1,19 @@
 import Foundation
 
-struct ISOBMFF {
+struct ISOBMFF: Encodable {
   enum Error: Swift.Error {
     case invalidAtomSize(String)
   }
-  let data: Data
+
+  @CodableIgnored
+  var data: Data!
+
   let children: [Atom]
 
   init(_ url: URL) {
-    self.data = try! Data(contentsOf: url, options: .alwaysMapped)
-    children = try! ISOBMFF.parse(self.data)
+    let data = try! Data(contentsOf: url, options: .alwaysMapped)
+    children = try! ISOBMFF.parse(data)
+    self.data = data
   }
 
   static func parse(_ data: Data) throws -> [Atom] {
