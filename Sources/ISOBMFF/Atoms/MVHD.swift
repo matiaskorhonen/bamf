@@ -57,5 +57,34 @@ extension Atom {
     init(data: Data) {
       super.init(data: data, type: "mvhd")
     }
+
+    private enum CodingKeys: String, CodingKey {
+      case type
+      case version
+      case flags
+      case creationTime
+      case modificationTime
+      case timeScale
+      case duration
+      case preferredRate
+      case preferredVolume
+      case nextTrackID
+    }
+
+    override func encode(to encoder: Encoder) throws {
+      try super.encode(to: encoder)
+      var container = encoder.container(keyedBy: CodingKeys.self)
+
+      try container.encode(type, forKey: .type)
+      try container.encode(version, forKey: .version)
+      try container.encode(flags, forKey: .flags)
+      try container.encode(creationTime, forKey: .creationTime)
+      try container.encode(modificationTime, forKey: .modificationTime)
+      try container.encode(timeScale, forKey: .timeScale)
+      try container.encode(duration, forKey: .duration)
+      try container.encode(preferredRate, forKey: .preferredRate)
+      try container.encode(preferredVolume, forKey: .preferredVolume)
+      try container.encode(nextTrackID, forKey: .nextTrackID)
+    }
   }
 }

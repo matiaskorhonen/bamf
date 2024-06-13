@@ -43,5 +43,20 @@ extension Atom {
     init(data: Data) {
       super.init(data: data, type: "ftyp")
     }
+
+    private enum CodingKeys: String, CodingKey {
+      case type
+      case majorBrand
+      case minorVersion
+      case compatibleBrands
+    }
+
+    override func encode(to encoder: Encoder) throws {
+      var container = encoder.container(keyedBy: CodingKeys.self)
+      try container.encode(type, forKey: .type)
+      try container.encode(majorBrand, forKey: .majorBrand)
+      try container.encode(minorVersion, forKey: .minorVersion)
+      try container.encode(compatibleBrands, forKey: .compatibleBrands)
+    }
   }
 }
