@@ -75,6 +75,8 @@ extension Atom {
   class Unknown: Atom {
     // TODO: Fix UserData handling
     //
+    // https://developer.apple.com/documentation/quicktime-file-format/user_data_atoms#User-data-text-strings-and-language-codes
+    //
     // var stringValue: String? {
     //   // Ensure that there is non-null data
     //   let firstNonNull = data.firstIndex(where: { $0 != 0 }) ?? data.startIndex
