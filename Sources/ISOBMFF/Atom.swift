@@ -1,11 +1,7 @@
 import Foundation
 
-protocol WithDataInit {
-  init(data: Data)
-}
-
 public class Atom: Encodable, CustomDebugStringConvertible {
-  let type: AtomType
+  let type: String
 
   @CodableIgnored
   var data: Data!
@@ -16,93 +12,71 @@ public class Atom: Encodable, CustomDebugStringConvertible {
     "Atom(type=\(type), children=\(children.count))"
   }
 
-  init(data: Data, type: AtomType) {
+  init(data: Data, type: String) {
     self.data = data
     self.type = type
   }
 
-  static func from(type: AtomType, data: Data) -> Atom {
+  static func from(type: String, data: Data) -> Atom {
     switch type {
-    case .ftyp:
+    case "ftyp":
       return FTYP(data: data)
-    case .mdat:
+    case "mdat":
       return MDAT(data: data)
-    case .wide:
+    case "wide":
       return WIDE(data: data)
-    case .free:
+    case "free":
       return FREE(data: data)
-    case .skip:
+    case "skip":
       return SKIP(data: data)
-    case .mdhd:
+    case "mdhd":
       return MDHD(data: data)
-    case .mvhd:
+    case "mvhd":
       return MVHD(data: data)
-    case .moov:
+    case "moov":
       return MOOV(data: data)
-    case .trak:
+    case "trak":
       return TRAK(data: data)
-    case .tkhd:
+    case "tkhd":
       return TKHD(data: data)
-    case .mdia:
+    case "mdia":
       return MDIA(data: data)
-    case .hdlr:
+    case "hdlr":
       return HDLR(data: data)
-    case .minf:
+    case "minf":
       return MINF(data: data)
-    case .vmhd:
+    case "vmhd":
       return VMHD(data: data)
-    case .dinf:
+    case "dinf":
       return DINF(data: data)
-    case .dref:
+    case "dref":
       return DREF(data: data)
-    case .stbl:
+    case "stbl":
       return STBL(data: data)
-    case .stsd:
+    case "stsd":
       return STSD(data: data)
-    case .stts:
+    case "stts":
       return STTS(data: data)
-    case .stss:
+    case "stss":
       return STSS(data: data)
-    case .stsc:
+    case "stsc":
       return STSC(data: data)
-    case .stsz:
+    case "stsz":
       return STSZ(data: data)
-    case .stco:
+    case "stco":
       return STCO(data: data)
-    case .udta:
+    case "udta":
       return UDTA(data: data)
-    case .unknown:
+    default:
       return Unknown(data: data, type: type)
     }
   }
 
-  static func atomType(from typeBytes: Data) -> AtomType {
+  static func atomType(from typeBytes: Data) -> String {
     guard let typeStr = String(data: typeBytes, encoding: .macOSRoman) else {
-      return .unknown(type: "[\(typeBytes.hex)]")
+      return "[\(typeBytes.hex)]"
     }
 
-    return atomType(from: typeStr)
-  }
-
-  static func atomType(from typeStr: String) -> AtomType {
-    guard let type = AtomType.allCases.first(where: { String(describing: $0) == typeStr }) else {
-      return .unknown(type: typeStr)
-    }
-
-    return type
-  }
-
-  static func parseAtomType(from data: Data) -> AtomType {
-    let typeBytes = data[(data.startIndex + 4)..<(data.startIndex + 8)]
-
-    guard let typeStr = String(data: typeBytes, encoding: .macOSRoman) else {
-      return .unknown(type: "[\(typeBytes.hex)]")
-    }
-
-    guard let type = AtomType.allCases.first(where: { String(describing: $0) == typeStr }) else {
-      return .unknown(type: typeStr)
-    }
-
-    return type
+    return typeStr
   }
 }

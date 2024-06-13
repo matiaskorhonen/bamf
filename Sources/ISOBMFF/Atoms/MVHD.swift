@@ -2,7 +2,7 @@ import Foundation
 
 extension Atom {
   // https://xhelmboyx.tripod.com/formats/mp4-layout.txt
-  class MVHD: Atom, WithDataInit {
+  class MVHD: Atom {
     var version: UInt8 {
       return UInt8(data[data.startIndex + 0])
     }
@@ -54,8 +54,8 @@ extension Atom {
         """
     }
 
-    required init(data: Data) {
-      super.init(data: data, type: .mvhd)
+    init(data: Data) {
+      super.init(data: data, type: "mvhd")
     }
   }
 }

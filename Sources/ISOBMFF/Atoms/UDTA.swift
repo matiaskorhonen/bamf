@@ -1,7 +1,7 @@
 import Foundation
 
 extension Atom {
-  class UDTA: Atom, WithDataInit {
+  class UDTA: Atom {
     // https://developer.apple.com/documentation/quicktime-file-format/user_data_atom
     // https://developer.apple.com/documentation/quicktime-file-format/user_data_atoms
     var userData: [Atom] {
@@ -12,8 +12,8 @@ extension Atom {
       "Atom(type=\(type), children=\(children.count), userData=\(userData))"
     }
 
-    required init(data: Data) {
-      super.init(data: data, type: .udta)
+    init(data: Data) {
+      super.init(data: data, type: "udta")
     }
   }
 }
