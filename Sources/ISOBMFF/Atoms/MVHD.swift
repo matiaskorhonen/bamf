@@ -14,20 +14,10 @@ extension Atom {
       ]
     }
     var creationTime: Date {
-      let timeBytes = data[(data.startIndex + 4)..<(data.startIndex + 8)]
-      let time: UInt32 = timeBytes.asInteger()
-
-      // The difference between the Unix timestamp epoch (1970) and the Mac
-      // timestamp epoch (1904) is 2082844800 seconds
-      return Date(timeIntervalSince1970: TimeInterval(time - 2_082_844_800))
+      return data[(data.startIndex + 4)..<(data.startIndex + 8)].asDate()
     }
     var modificationTime: Date {
-      let timeBytes = data[(data.startIndex + 8)..<(data.startIndex + 12)]
-      let time: UInt32 = timeBytes.asInteger()
-
-      // The difference between the Unix timestamp epoch (1970) and the Mac
-      // timestamp epoch (1904) is 2082844800 seconds
-      return Date(timeIntervalSince1970: TimeInterval(time - 2_082_844_800))
+      data[(data.startIndex + 8)..<(data.startIndex + 12)].asDate()
     }
     var timeScale: UInt32 {
       let bytes = data[(data.startIndex + 12)..<(data.startIndex + 16)]
