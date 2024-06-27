@@ -13,7 +13,7 @@ import Testing
 
     for url in urls! {
       let bamf = Bamf(url)
-      #expect(Bamf.children.count > 0)
+      #expect(bamf.children.count > 0)
     }
   }
 
@@ -25,7 +25,7 @@ import Testing
 
     for url in urls! {
       let bamf = Bamf(url)
-      #expect(Bamf.children.count > 0)
+      #expect(bamf.children.count > 0)
     }
   }
 
@@ -37,7 +37,7 @@ import Testing
 
     for url in urls! {
       let bamf = Bamf(url)
-      #expect(Bamf.children.count > 0)
+      #expect(bamf.children.count > 0)
     }
   }
 
@@ -49,7 +49,7 @@ import Testing
 
     for url in urls! {
       let bamf = Bamf(url)
-      #expect(Bamf.children.count > 0)
+      #expect(bamf.children.count > 0)
     }
   }
 }
