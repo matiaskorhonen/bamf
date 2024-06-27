@@ -2,75 +2,75 @@ import Foundation
 
 // MARK: All atoms that don't have a specific implementation yet
 extension Atom {
-  class MDIA: Atom {
-    init(data: Data) {
+  public class MDIA: Atom {
+    public init(data: Data) {
       super.init(data: data, type: "mdia")
     }
   }
-  class MDHD: Atom {
-    init(data: Data) {
+  public class MDHD: Atom {
+    public init(data: Data) {
       super.init(data: data, type: "mdhd")
     }
   }
-  class HDLR: Atom {
-    init(data: Data) {
+  public class HDLR: Atom {
+    public init(data: Data) {
       super.init(data: data, type: "hdlr")
     }
   }
-  class MINF: Atom {
-    init(data: Data) {
+  public class MINF: Atom {
+    public init(data: Data) {
       super.init(data: data, type: "minf")
     }
   }
-  class VMHD: Atom {
-    init(data: Data) {
+  public class VMHD: Atom {
+    public init(data: Data) {
       super.init(data: data, type: "vmhd")
     }
   }
-  class DINF: Atom {
-    init(data: Data) {
+  public class DINF: Atom {
+    public init(data: Data) {
       super.init(data: data, type: "dinf")
     }
   }
-  class DREF: Atom {
-    init(data: Data) {
+  public class DREF: Atom {
+    public init(data: Data) {
       super.init(data: data, type: "dref")
     }
   }
-  class STBL: Atom {
-    init(data: Data) {
+  public class STBL: Atom {
+    public init(data: Data) {
       super.init(data: data, type: "stbl")
     }
   }
-  class STSD: Atom {
-    init(data: Data) {
+  public class STSD: Atom {
+    public init(data: Data) {
       super.init(data: data, type: "stsd")
     }
   }
-  class STTS: Atom {
-    init(data: Data) {
+  public class STTS: Atom {
+    public init(data: Data) {
       super.init(data: data, type: "stts")
     }
   }
-  class STSS: Atom {
-    init(data: Data) {
+  public class STSS: Atom {
+    public init(data: Data) {
       super.init(data: data, type: "stss")
     }
   }
-  class STSC: Atom {
-    init(data: Data) {
+  public class STSC: Atom {
+    public init(data: Data) {
       super.init(data: data, type: "stsc")
     }
   }
-  class STSZ: Atom {
-    init(data: Data) {
+  public class STSZ: Atom {
+    public init(data: Data) {
       super.init(data: data, type: "stsz")
     }
   }
-  class STCO: Atom {
-    init(data: Data) {
+  public class STCO: Atom {
+    public init(data: Data) {
       super.init(data: data, type: "stco")
     }
   }
-  class Unknown: Atom {}
+  public class Unknown: Atom {}
 }

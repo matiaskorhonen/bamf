@@ -2,7 +2,7 @@ import Foundation
 
 extension Atom {
   // https://xhelmboyx.tripod.com/formats/mp4-layout.txt
-  class MVHD: Atom {
+  public class MVHD: Atom {
     /// If version is 1 then date and duration values are 8 bytes in length
     public var version: UInt8 {
       return UInt8(data[data.startIndex + 0])
@@ -48,7 +48,7 @@ extension Atom {
       return 0
     }
 
-    override var debugDescription: String {
+    override public var debugDescription: String {
       return """
         Atom(
           type=\(type),
@@ -83,7 +83,7 @@ extension Atom {
       case nextTrackID
     }
 
-    override func encode(to encoder: Encoder) throws {
+    override public func encode(to encoder: Encoder) throws {
       try super.encode(to: encoder)
       var container = encoder.container(keyedBy: CodingKeys.self)
 
