@@ -16,7 +16,7 @@ struct ISOBMFF: Encodable {
     self.data = data
   }
 
-  static func parse(_ data: Data) throws -> [Atom] {
+  static func parse(_ data: Data, isUserData: Bool = false) throws -> [Atom] {
     var cursor: Int = data.startIndex
     var atoms: [Atom] = []
 
@@ -48,9 +48,13 @@ struct ISOBMFF: Encodable {
       // Get the data without the size and type fields
       let atomData = data[dataStartIndex..<(dataEndIndex)]
 
-      let atom = Atom.from(type: atomType, data: atomData)
-
-      atoms.append(atom)
+      if isUserData {
+        let atom = Atom.UserData(data: atomData, type: atomType)
+        atoms.append(atom)
+      } else {
+        let atom = Atom.from(type: atomType, data: atomData)
+        atoms.append(atom)
+      }
 
       cursor += Int(size)
     }
