@@ -1,18 +1,18 @@
 import Foundation
 
 public class Atom: Encodable, CustomDebugStringConvertible {
-  let type: String
+  public let type: String
 
   @CodableIgnored
-  var data: Data!
+  public var data: Data!
 
-  var children: [Atom] = []
+  public var children: [Atom] = []
 
   public var debugDescription: String {
     "Atom(type=\(type), children=\(children.count))"
   }
 
-  init(data: Data, type: String) {
+  public init(data: Data, type: String) {
     self.data = data
     self.type = type
   }

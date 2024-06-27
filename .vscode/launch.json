@@ -1,0 +1,76 @@
+{
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": [
+        "swift"
+      ],
+      "args": [],
+      "cwd": "${workspaceFolder:isobmff}",
+      "name": "Debug bamf",
+      "program": "${workspaceFolder:isobmff}/.build/debug/bamf",
+      "preLaunchTask": "swift: Build Debug bamf"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": [
+        "swift"
+      ],
+      "args": [],
+      "cwd": "${workspaceFolder:isobmff}",
+      "name": "Release bamf",
+      "program": "${workspaceFolder:isobmff}/.build/release/bamf",
+      "preLaunchTask": "swift: Build Release bamf"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": [
+        "swift"
+      ],
+      "args": [],
+      "cwd": "${workspaceFolder:isobmff}",
+      "name": "Debug BamfCLI",
+      "program": "${workspaceFolder:isobmff}/.build/debug/BamfCLI",
+      "preLaunchTask": "swift: Build Debug BamfCLI"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": [
+        "swift"
+      ],
+      "args": [],
+      "cwd": "${workspaceFolder:isobmff}",
+      "name": "Release BamfCLI",
+      "program": "${workspaceFolder:isobmff}/.build/release/BamfCLI",
+      "preLaunchTask": "swift: Build Release BamfCLI"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": [
+        "swift"
+      ],
+      "args": [],
+      "cwd": "${workspaceFolder:isobmff}",
+      "name": "Debug bamf-cli",
+      "program": "${workspaceFolder:isobmff}/.build/debug/bamf-cli",
+      "preLaunchTask": "swift: Build Debug bamf-cli"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": [
+        "swift"
+      ],
+      "args": [],
+      "cwd": "${workspaceFolder:isobmff}",
+      "name": "Release bamf-cli",
+      "program": "${workspaceFolder:isobmff}/.build/release/bamf-cli",
+      "preLaunchTask": "swift: Build Release bamf-cli"
+    }
+  ]
+}

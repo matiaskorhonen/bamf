@@ -9,17 +9,23 @@ let package = Package(
     // Products define the executables and libraries a package produces, making them visible to other packages.
     .library(
       name: "Bamf",
-      targets: ["Bamf"])
-
+      targets: ["Bamf"]),
+    .executable(name: "bamf-cli", targets: ["BamfCLI"]),
   ],
   dependencies: [
-    .package(url: "https://github.com/apple/swift-testing.git", branch: "main")
+    .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
+    .package(url: "https://github.com/apple/swift-testing.git", branch: "main"),
   ],
   targets: [
-    // Targets are the basic building blocks of a package, defining a module or a test suite.
-    // Targets can depend on other targets in this package and products from dependencies.
     .target(
       name: "Bamf"),
+    .executableTarget(
+      name: "BamfCLI",
+      dependencies: [
+        "Bamf",
+        .product(name: "ArgumentParser", package: "swift-argument-parser"),
+      ]
+    ),
     .testTarget(
       name: "BamfTests",
       dependencies: [

@@ -11,7 +11,7 @@ import Testing
     #expect(urls!.count == 4)
 
     for url in urls! {
-      let Bamf = Bamf(url)
+      let bamf = Bamf(url)
       #expect(Bamf.children.count > 0)
     }
   }
@@ -23,7 +23,7 @@ import Testing
     #expect(urls!.count == 1)
 
     for url in urls! {
-      let Bamf = Bamf(url)
+      let bamf = Bamf(url)
       #expect(Bamf.children.count > 0)
     }
   }
