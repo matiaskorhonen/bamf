@@ -3,7 +3,7 @@ import Foundation
 extension Atom {
   class UserData: Atom {
 
-    var languageEncoding: String.Encoding? {
+    var stringEncoding: String.Encoding? {
       guard let value = self.languageCodeValue else {
         return nil
       }
@@ -25,7 +25,7 @@ extension Atom {
     }
 
     // https://developer.apple.com/documentation/quicktime-file-format/language_code_values
-    var languageCodeValue: UInt16? {
+    private var languageCodeValue: UInt16? {
       guard self.type.starts(with: "©") else {
         return nil
       }
@@ -40,7 +40,7 @@ extension Atom {
     }
 
     var stringValue: String? {
-      guard let encoding = languageEncoding else {
+      guard let encoding = stringEncoding else {
         return nil
       }
 
@@ -52,10 +52,26 @@ extension Atom {
       return String(data: stringData, encoding: encoding)
     }
 
+    var dateValue: Date? {
+      guard data.count == 4 else { return nil }
+
+      return data.asDate()
+    }
+
+    var integerValue: UInt64? {
+      // Only handle ≤ 64-bit data as a possible integer
+      guard data.count <= (UInt64.bitWidth / UInt8.bitWidth) else { return nil }
+
+      return data.asInteger()
+    }
+
     private enum CodingKeys: String, CodingKey {
       case type
+      case stringEncoding
       case stringValue
-      case languageCodeValue
+      case dateValue
+      case integerValue
+      case data
     }
 
     override func encode(to encoder: Encoder) throws {
@@ -63,50 +79,42 @@ extension Atom {
       var container = encoder.container(keyedBy: CodingKeys.self)
 
       try container.encode(type, forKey: .type)
-      try container.encode(stringValue, forKey: .stringValue)
-      try container.encode(languageCodeValue, forKey: .languageCodeValue)
+
+      if let stringValue = stringValue {
+        if let encoding = stringEncoding {
+          var encodingStr: String!
+
+          switch encoding {
+          case .macOSRoman:
+            encodingStr = "macintosh"
+          case .utf8:
+            encodingStr = "utf8"
+          case .utf16:
+            encodingStr = "utf16"
+          default:
+            encodingStr = "unknown"
+          }
+
+          try container.encode(encodingStr, forKey: .stringEncoding)
+        }
+
+        try container.encode(stringValue, forKey: .stringValue)
+      }
+      if let dateValue = dateValue {
+        try container.encode(dateValue, forKey: .dateValue)
+      }
+      if let integerValue = integerValue {
+        try container.encode(integerValue, forKey: .integerValue)
+      }
+
+      let endIndex = min(data.startIndex + 64, data.endIndex)
+      var hexData = data[data.startIndex..<(endIndex)].hex
+
+      if data.count > 64 {
+        hexData += "... and \(data.count) more byte(s)"
+      }
+
+      try container.encode(hexData, forKey: .data)
     }
-
-    // TODO: Fix UserData handling
-    //
-    // https://developer.apple.com/documentation/quicktime-file-format/user_data_atoms#User-data-text-strings-and-language-codes
-    //
-    // var stringValue: String? {
-    //   // Ensure that there is non-null data
-    //   let firstNonNull = data.firstIndex(where: { $0 != 0 }) ?? data.startIndex
-    //   let startTrimmed = data[firstNonNull...]
-    //   guard startTrimmed.count > 0 else { return nil }
-
-    //   let lastNonNull = startTrimmed.lastIndex(where: { $0 != 0 }) ?? startTrimmed.endIndex
-    //   let trimmed = startTrimmed[..<lastNonNull]
-
-    //   return String(data: trimmed, encoding: .utf8)
-    // }
-    // var dateValue: Date? {
-    //   guard data.count == 4 else { return nil }
-
-    //   return data.asDate()
-    // }
-    // var integerValue: UInt64? {
-    //   // Only handle ≤ 64-bit data as a possible integer
-    //   guard data.count <= (UInt64.bitWidth / UInt8.bitWidth) else { return nil }
-
-    //   return data.asInteger()
-    // }
-
-    // private enum CodingKeys: String, CodingKey {
-    //   case type
-    //   case stringValue
-    //   case dateValue
-    //   case integerValue
-    // }
-
-    // override func encode(to encoder: Encoder) throws {
-    //   var container = encoder.container(keyedBy: CodingKeys.self)
-    //   try container.encode(type, forKey: .type)
-    //   try container.encode(stringValue, forKey: .stringValue)
-    //   try container.encode(dateValue, forKey: .dateValue)
-    //   try container.encode(integerValue, forKey: .integerValue)
-    // }
   }
 }
