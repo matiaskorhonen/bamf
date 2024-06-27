@@ -8,11 +8,20 @@ extension Atom {
         return nil
       }
 
+      guard stringData.count > 0 else {
+        return nil
+      }
+
       if value <= 40 || value == 0x7FFF {
         return String.Encoding.macOSRoman
       }
 
-      return String.Encoding.utf8  // TODO: Handle UTF-16
+      // If the data starts with the BOM, it's UTF-16
+      if stringData.starts(with: [0x7F, 0xFF]) {
+        return String.Encoding.utf16
+      }
+
+      return String.Encoding.utf8
     }
 
     // https://developer.apple.com/documentation/quicktime-file-format/language_code_values
