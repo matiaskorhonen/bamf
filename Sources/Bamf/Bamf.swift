@@ -1,5 +1,6 @@
 import Foundation
 
+/// A struct representing an ISOBMFF file
 public struct Bamf: Encodable {
   enum Error: Swift.Error {
     case invalidAtomSize(String)
@@ -8,15 +9,24 @@ public struct Bamf: Encodable {
   @CodableIgnored
   var data: Data!
 
-  let children: [Atom]
+  /// The root atoms of the file
+  public let children: [Atom]
 
+  /// Create a new `Bamf` instance from a local file URL
+  ///
+  /// - Parameter url: A local file URL to a MP4, MOV, or other ISOBMFF file
   public init(_ url: URL) {
     let data = try! Data(contentsOf: url, options: .alwaysMapped)
     children = try! Bamf.parse(data)
     self.data = data
   }
 
-  static func parse(_ data: Data, isUserData: Bool = false) throws -> [Atom] {
+  /// Parse the given data
+  ///
+  /// - Parameters:
+  ///  - data: ISOBMFF data
+  ///  - isUserData: Whether the data is user data (used for parsing `udta` atoms)
+  public static func parse(_ data: Data, isUserData: Bool = false) throws -> [Atom] {
     var cursor: Int = data.startIndex
     var atoms: [Atom] = []
 

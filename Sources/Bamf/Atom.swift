@@ -1,22 +1,37 @@
 import Foundation
 
+/// A struct representing an ISOBMFF atom or box.
 public class Atom: Encodable, CustomDebugStringConvertible {
+  /// A four character string representing the type of the atom.
   public let type: String
 
+  /// The raw data of the atom or box.
   @CodableIgnored
   public var data: Data!
 
+  /// The children atoms or boxes, if applicable.
   public var children: [Atom] = []
 
+  /// A textual representation of this instance, suitable for debugging.
   public var debugDescription: String {
     "Atom(type=\(type), children=\(children.count))"
   }
 
+  /// Initialize a new `Atom` instance with the given data and type.
+  ///
+  /// - Parameters:
+  ///   - data: The raw data of the atom or box. The data should not include the size or type fields.
+  ///   - type: A four character string representing the type of the atom.
   public init(data: Data, type: String) {
     self.data = data
     self.type = type
   }
 
+  /// Initialize a new `Atom` instance with the appropriate subclass for the given type.
+  ///
+  /// - Parameters:
+  ///   - data: The raw data of the atom or box. The data should not include the size or type fields.
+  ///   - type: A four character string representing the type of the atom.
   static func from(type: String, data: Data) -> Atom {
     switch type {
     case "ftyp":
@@ -72,6 +87,8 @@ public class Atom: Encodable, CustomDebugStringConvertible {
     }
   }
 
+  /// Get the atom type from the given four character string. Returns a hex
+  /// representation of the type if the type is not a valid string.
   static func atomType(from typeBytes: Data) -> String {
     guard let typeStr = String(data: typeBytes, encoding: .macOSRoman) else {
       return "[\(typeBytes.hex)]"
