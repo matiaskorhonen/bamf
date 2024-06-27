@@ -2,50 +2,55 @@ import Foundation
 
 extension Atom {
   class TKHD: Atom {
-    var version: UInt8 {
+    /// If version is 1 then date and duration values are 8 bytes in length
+    public var version: UInt8 {
       return UInt8(data[data.startIndex + 0])
     }
-    var flags: [UInt8] {
+    /// Future track header flags
+    public var flags: [UInt8] {
       [
         UInt8(data[data.startIndex + 1]),
         UInt8(data[data.startIndex + 2]),
         UInt8(data[data.startIndex + 3]),
       ]
     }
-    var creationTime: Date {
+    /// Track creation datetime
+    public var creationTime: Date {
       data[(data.startIndex + 4)..<(data.startIndex + 8)].asDate()
     }
-    var modificationTime: Date {
+    /// Track modification datetime
+    public var modificationTime: Date {
       data[(data.startIndex + 8)..<(data.startIndex + 12)].asDate()
     }
-    var trackID: UInt32 {
+    /// A unique integer that identifies the track
+    public var trackID: UInt32 {
       return 0
     }
-    var reserved1: UInt32 {
+    public var reserved1: UInt32 {
       return 0
     }
-    var duration: UInt32 {
+    public var duration: UInt32 {
       return 0
     }
-    var reserved2: UInt32 {
+    public var reserved2: UInt32 {
       return 0
     }
-    var layer: UInt32 {
+    public var layer: UInt32 {
       return 0
     }
-    var alternateGroup: UInt32 {
+    public var alternateGroup: UInt32 {
       return 0
     }
-    var volume: Float {
+    public var volume: Float {
       return 0
     }
-    var matrix: String {
+    public var matrix: String {
       return ""
     }
-    var width: UInt32 {
+    public var width: UInt32 {
       return 0
     }
-    var height: UInt32 {
+    public var height: UInt32 {
       return 0
     }
 
