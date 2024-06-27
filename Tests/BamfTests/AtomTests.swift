@@ -1,7 +1,7 @@
 import Foundation
 import Testing
 
-@testable import ISOBMFF
+@testable import Bamf
 
 // Test compatibility with test files from ExifTool
 @Suite struct AtomTests {

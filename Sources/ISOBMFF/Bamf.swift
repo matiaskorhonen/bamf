@@ -1,6 +1,6 @@
 import Foundation
 
-struct ISOBMFF: Encodable {
+struct Bamf: Encodable {
   enum Error: Swift.Error {
     case invalidAtomSize(String)
   }
@@ -12,7 +12,7 @@ struct ISOBMFF: Encodable {
 
   init(_ url: URL) {
     let data = try! Data(contentsOf: url, options: .alwaysMapped)
-    children = try! ISOBMFF.parse(data)
+    children = try! Bamf.parse(data)
     self.data = data
   }
 

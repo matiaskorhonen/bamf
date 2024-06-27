@@ -1,7 +1,7 @@
 import Foundation
 import Testing
 
-@testable import ISOBMFF
+@testable import Bamf
 
 // Test compatibility with test files from ExifTool
 @Suite struct ExifToolTests {
@@ -12,8 +12,8 @@ import Testing
     #expect(urls!.count == 1)
 
     for url in urls! {
-      let isobmff = ISOBMFF(url)
-      #expect(isobmff.children.count > 0)
+      let Bamf = Bamf(url)
+      #expect(Bamf.children.count > 0)
     }
   }
 
@@ -24,8 +24,8 @@ import Testing
     #expect(urls!.count == 1)
 
     for url in urls! {
-      let isobmff = ISOBMFF(url)
-      #expect(isobmff.children.count > 0)
+      let Bamf = Bamf(url)
+      #expect(Bamf.children.count > 0)
     }
   }
 
@@ -36,8 +36,8 @@ import Testing
     #expect(urls!.count == 1)
 
     for url in urls! {
-      let isobmff = ISOBMFF(url)
-      #expect(isobmff.children.count > 0)
+      let Bamf = Bamf(url)
+      #expect(Bamf.children.count > 0)
     }
   }
 
@@ -48,8 +48,8 @@ import Testing
     #expect(urls!.count == 1)
 
     for url in urls! {
-      let isobmff = ISOBMFF(url)
-      #expect(isobmff.children.count > 0)
+      let Bamf = Bamf(url)
+      #expect(Bamf.children.count > 0)
     }
   }
 }

@@ -1,9 +1,9 @@
 import Foundation
 import Testing
 
-@testable import ISOBMFF
+@testable import Bamf
 
-@Suite struct ISOBMFFTests {
+@Suite struct BamfTests {
   @Test func mpeg4() {
     let urls = Bundle.module.urls(forResourcesWithExtension: "MP4", subdirectory: nil)
 
@@ -11,8 +11,8 @@ import Testing
     #expect(urls!.count == 4)
 
     for url in urls! {
-      let isobmff = ISOBMFF(url)
-      #expect(isobmff.children.count > 0)
+      let Bamf = Bamf(url)
+      #expect(Bamf.children.count > 0)
     }
   }
 
@@ -23,8 +23,8 @@ import Testing
     #expect(urls!.count == 1)
 
     for url in urls! {
-      let isobmff = ISOBMFF(url)
-      #expect(isobmff.children.count > 0)
+      let Bamf = Bamf(url)
+      #expect(Bamf.children.count > 0)
     }
   }
 }
