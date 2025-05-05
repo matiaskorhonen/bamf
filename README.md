@@ -9,7 +9,7 @@ A pure Swift parser for ISOBMFF (ISO Base Media File Format) based formats such 
 > [!TIP]
 > **Why is this called Bamf!?**
 >
-> It's my headcanon for how to pronouce BMFF
+> It's my [headcanon](https://en.wiktionary.org/wiki/headcanon#Noun) for how to pronouce BMFF
 
 ## Installation
 
