@@ -62,6 +62,8 @@ public class Atom: Encodable, CustomDebugStringConvertible {
       return MINF(data: data)
     case "vmhd":
       return VMHD(data: data)
+    case "smhd":
+      return SMHD(data: data)
     case "dinf":
       return DINF(data: data)
     case "dref":

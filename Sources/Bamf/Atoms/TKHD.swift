@@ -1,12 +1,12 @@
 import Foundation
 
 extension Atom {
-  class TKHD: Atom {
-    /// If version is 1 then date and duration values are 8 bytes in length
+  /// Track Header Box (ISO 14496-12 §8.3.2)
+  public class TKHD: Atom {
+    /// Version 0 uses 32-bit time/duration fields; version 1 uses 64-bit fields.
     public var version: UInt8 {
-      return UInt8(data[data.startIndex + 0])
+      return UInt8(data[data.startIndex])
     }
-    /// Future track header flags
     public var flags: [UInt8] {
       [
         UInt8(data[data.startIndex + 1]),
@@ -16,68 +16,81 @@ extension Atom {
     }
     /// Track creation datetime
     public var creationTime: Date {
-      data[(data.startIndex + 4)..<(data.startIndex + 8)].asDate()
+      if version == 1 {
+        let time: UInt64 = data[(data.startIndex + 4)..<(data.startIndex + 12)].asInteger()
+        return Date(timeIntervalSince1904: TimeInterval(time))
+      }
+      return data[(data.startIndex + 4)..<(data.startIndex + 8)].asDate()
     }
     /// Track modification datetime
     public var modificationTime: Date {
-      data[(data.startIndex + 8)..<(data.startIndex + 12)].asDate()
+      if version == 1 {
+        let time: UInt64 = data[(data.startIndex + 12)..<(data.startIndex + 20)].asInteger()
+        return Date(timeIntervalSince1904: TimeInterval(time))
+      }
+      return data[(data.startIndex + 8)..<(data.startIndex + 12)].asDate()
     }
     /// A unique integer that identifies the track
     public var trackID: UInt32 {
-      return 0
+      let offset = version == 1 ? 20 : 12
+      return data[(data.startIndex + offset)..<(data.startIndex + offset + 4)].asInteger()
     }
-    public var reserved1: UInt32 {
-      return 0
+    /// Duration of this track in movie time scale units
+    public var duration: UInt64 {
+      if version == 1 {
+        return data[(data.startIndex + 28)..<(data.startIndex + 36)].asInteger()
+      }
+      let d: UInt32 = data[(data.startIndex + 20)..<(data.startIndex + 24)].asInteger()
+      return UInt64(d)
     }
-    public var duration: UInt32 {
-      return 0
+    /// The front-to-back ordering of video tracks; tracks with lower layers are closer to the viewer
+    public var layer: Int16 {
+      let offset = version == 1 ? 44 : 32
+      let raw: UInt16 = data[(data.startIndex + offset)..<(data.startIndex + offset + 2)].asInteger()
+      return Int16(bitPattern: raw)
     }
-    public var reserved2: UInt32 {
-      return 0
+    /// Identifies a collection of movie tracks that contain alternate data
+    public var alternateGroup: Int16 {
+      let offset = version == 1 ? 46 : 34
+      let raw: UInt16 = data[(data.startIndex + offset)..<(data.startIndex + offset + 2)].asInteger()
+      return Int16(bitPattern: raw)
     }
-    public var layer: UInt32 {
-      return 0
+    /// The preferred volume of the track's audio (8.8 fixed point)
+    public var volume: Decimal {
+      let offset = version == 1 ? 48 : 36
+      return data[(data.startIndex + offset)..<(data.startIndex + offset + 2)].asFixedPoint(1, 1)
     }
-    public var alternateGroup: UInt32 {
-      return 0
+    /// The visual width of this track (16.16 fixed point)
+    public var width: Decimal {
+      let offset = version == 1 ? 88 : 76
+      return data[(data.startIndex + offset)..<(data.startIndex + offset + 4)].asFixedPoint(2, 2)
     }
-    public var volume: Float {
-      return 0
-    }
-    public var matrix: String {
-      return ""
-    }
-    public var width: UInt32 {
-      return 0
-    }
-    public var height: UInt32 {
-      return 0
+    /// The visual height of this track (16.16 fixed point)
+    public var height: Decimal {
+      let offset = version == 1 ? 92 : 80
+      return data[(data.startIndex + offset)..<(data.startIndex + offset + 4)].asFixedPoint(2, 2)
     }
 
-    override var debugDescription: String {
+    override public var debugDescription: String {
       return """
         Atom(
           type=\(type),
-          children=\(children.count)
           version=\(version)
           flags=\(flags)
           creationTime=\(creationTime)
           modificationTime=\(modificationTime)
           trackID=\(trackID)
           duration=\(duration)
-          reserved1=\(reserved1)
-          reserved2=\(reserved2)
           layer=\(layer)
           alternateGroup=\(alternateGroup)
           volume=\(volume)
-          matrix=\(matrix)
           width=\(width)
           height=\(height)
         )
         """
     }
 
-    init(data: Data) {
+    public init(data: Data) {
       super.init(data: data, type: "tkhd")
     }
 
@@ -89,20 +102,15 @@ extension Atom {
       case modificationTime
       case trackID
       case duration
-      case reserved1
-      case reserved2
       case layer
       case alternateGroup
       case volume
-      case matrix
       case width
       case height
     }
 
-    override func encode(to encoder: Encoder) throws {
-      try super.encode(to: encoder)
+    override public func encode(to encoder: Encoder) throws {
       var container = encoder.container(keyedBy: CodingKeys.self)
-
       try container.encode(type, forKey: .type)
       try container.encode(version, forKey: .version)
       try container.encode(flags, forKey: .flags)
@@ -110,12 +118,9 @@ extension Atom {
       try container.encode(modificationTime, forKey: .modificationTime)
       try container.encode(trackID, forKey: .trackID)
       try container.encode(duration, forKey: .duration)
-      try container.encode(reserved1, forKey: .reserved1)
-      try container.encode(reserved2, forKey: .reserved2)
       try container.encode(layer, forKey: .layer)
       try container.encode(alternateGroup, forKey: .alternateGroup)
       try container.encode(volume, forKey: .volume)
-      try container.encode(matrix, forKey: .matrix)
       try container.encode(width, forKey: .width)
       try container.encode(height, forKey: .height)
     }

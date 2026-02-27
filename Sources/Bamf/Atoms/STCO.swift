@@ -1,0 +1,57 @@
+import Foundation
+
+extension Atom {
+  /// Chunk Offset Box (ISO 14496-12 §8.7.5)
+  public class STCO: Atom {
+    public var version: UInt8 {
+      return UInt8(data[data.startIndex])
+    }
+    public var flags: [UInt8] {
+      [
+        UInt8(data[data.startIndex + 1]),
+        UInt8(data[data.startIndex + 2]),
+        UInt8(data[data.startIndex + 3]),
+      ]
+    }
+    public var entryCount: UInt32 {
+      return data[(data.startIndex + 4)..<(data.startIndex + 8)].asInteger()
+    }
+    /// Byte offsets of each chunk from the beginning of the file
+    public var chunkOffsets: [UInt32] {
+      var result: [UInt32] = []
+      let count = Int(entryCount)
+      result.reserveCapacity(count)
+      var offset = data.startIndex + 8
+      for _ in 0..<count {
+        guard offset + 4 <= data.endIndex else { break }
+        let chunkOffset: UInt32 = data[offset..<(offset + 4)].asInteger()
+        result.append(chunkOffset)
+        offset += 4
+      }
+      return result
+    }
+
+    override public var debugDescription: String {
+      return "Atom(type=\(type), entryCount=\(entryCount))"
+    }
+
+    public init(data: Data) {
+      super.init(data: data, type: "stco")
+    }
+
+    private enum CodingKeys: String, CodingKey {
+      case type
+      case version
+      case flags
+      case entryCount
+    }
+
+    override public func encode(to encoder: Encoder) throws {
+      var container = encoder.container(keyedBy: CodingKeys.self)
+      try container.encode(type, forKey: .type)
+      try container.encode(version, forKey: .version)
+      try container.encode(flags, forKey: .flags)
+      try container.encode(entryCount, forKey: .entryCount)
+    }
+  }
+}
