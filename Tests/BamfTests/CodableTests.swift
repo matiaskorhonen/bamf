@@ -4,15 +4,15 @@ import Testing
 @testable import Bamf
 
 @Suite struct CodableTests {
-  @Test func encodable() {
+  @Test func encodable() throws {
     let url = Bundle.module.url(forResource: "DJI_0007", withExtension: "MP4")!
-    let bamf = Bamf(url)
+    let bamf = try Bamf(url)
 
     let encoder = JSONEncoder()
     encoder.outputFormatting = .prettyPrinted
     encoder.dateEncodingStrategy = .iso8601
 
-    let data = try! encoder.encode(bamf)
+    let data = try encoder.encode(bamf)
     let json = String(data: data, encoding: .utf8)!
 
     #expect(json.count > 0)
