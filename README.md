@@ -57,6 +57,36 @@ The library is fully documented with [DocC](https://www.swift.org/documentation/
 swift package --disable-sandbox preview-documentation --target Bamf
 ```
 
+## Development
+
+### Formatting and linting
+
+This project uses Swift's built-in formatter (`swift format`) with settings in `.swift-format`.
+
+Run formatting manually:
+
+```sh
+swift format --in-place --recursive Sources Tests
+```
+
+Run lint checks manually:
+
+```sh
+swift format lint --recursive Sources Tests
+```
+
+### Lefthook pre-commit hook
+
+This repository uses [lefthook](https://github.com/evilmartians/lefthook) via the [csjones/lefthook-plugin](https://github.com/csjones/lefthook-plugin).
+
+Install hooks after cloning:
+
+```sh
+swift package --disable-sandbox lefthook install
+```
+
+The pre-commit hook in `lefthook.yml` runs formatter and lint checks on staged Swift files.
+
 ## License
 
 MIT License. See <LICENSE> file for details.

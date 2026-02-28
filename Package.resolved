@@ -1,6 +1,15 @@
 {
-  "originHash" : "76c11dfa111c6a64ecee7530dbad48a392af505178cc4dab6eb6ab1bf350990f",
+  "originHash" : "976eb9e87fbe731e1188755d31130dcbd9e973275894376d6c27fe56c8d4e343",
   "pins" : [
+    {
+      "identity" : "lefthook-plugin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/csjones/lefthook-plugin.git",
+      "state" : {
+        "revision" : "d07ccec95b19e3791adb5b78455e12e4eb8c60c9",
+        "version" : "2.1.1"
+      }
+    },
     {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
