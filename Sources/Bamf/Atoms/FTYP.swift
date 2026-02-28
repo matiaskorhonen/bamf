@@ -2,11 +2,11 @@ import Foundation
 
 extension Atom {
   public class FTYP: Atom {
-    var majorBrand: String? {
+    public var majorBrand: String? {
       let bytes = data[(data.startIndex)..<(data.startIndex + 4)]
       return String(data: bytes, encoding: .utf8)
     }
-    var minorVersion: String {
+    public var minorVersion: String {
       let bytes = [UInt8](data[(data.startIndex + 4)..<(data.startIndex + 8)])
       let century = String(bytes[0], radix: 16, uppercase: true)
       let year = String(bytes[1], radix: 16, uppercase: true)
@@ -15,7 +15,7 @@ extension Atom {
 
       return [century + year, month, zero].joined(separator: ".")
     }
-    var compatibleBrands: [String] {
+    public var compatibleBrands: [String] {
       var cursor = data.startIndex + 8
       var brands: [String?] = []
       while cursor < data.endIndex {

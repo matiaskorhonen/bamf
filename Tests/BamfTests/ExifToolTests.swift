@@ -5,50 +5,50 @@ import Testing
 
 // Test compatibility with test files from ExifTool
 @Suite struct ExifToolTests {
-  @Test func jpeg2000() {
+  @Test func jpeg2000() throws {
     let urls = Bundle.module.urls(forResourcesWithExtension: "jp2", subdirectory: "ExifTool")
 
     #expect(urls != nil, "there should be test JPEG2000 files in the test bundle")
     #expect(urls!.count == 1)
 
     for url in urls! {
-      let bamf = Bamf(url as URL)
+      let bamf = try Bamf(url as URL)
       #expect(bamf.children.count > 0)
     }
   }
 
-  @Test func m4a() {
+  @Test func m4a() throws {
     let urls = Bundle.module.urls(forResourcesWithExtension: "m4a", subdirectory: "ExifTool")
 
     #expect(urls != nil, "there should be test JPEG2000 files in the test bundle")
     #expect(urls!.count == 1)
 
     for url in urls! {
-      let bamf = Bamf(url as URL)
+      let bamf = try Bamf(url as URL)
       #expect(bamf.children.count > 0)
     }
   }
 
-  @Test func heic() {
+  @Test func heic() throws {
     let urls = Bundle.module.urls(forResourcesWithExtension: "heic", subdirectory: "ExifTool")
 
     #expect(urls != nil, "there should be test HEIC files in the test bundle")
     #expect(urls!.count == 1)
 
     for url in urls! {
-      let bamf = Bamf(url as URL)
+      let bamf = try Bamf(url as URL)
       #expect(bamf.children.count > 0)
     }
   }
 
-  @Test func quicktime() {
+  @Test func quicktime() throws {
     let urls = Bundle.module.urls(forResourcesWithExtension: "mov", subdirectory: "ExifTool")
 
     #expect(urls != nil, "there should be test MOV files in the test bundle")
     #expect(urls!.count == 1)
 
     for url in urls! {
-      let bamf = Bamf(url as URL)
+      let bamf = try Bamf(url as URL)
       #expect(bamf.children.count > 0)
     }
   }

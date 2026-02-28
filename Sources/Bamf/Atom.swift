@@ -9,6 +9,41 @@ public class Atom: Encodable, CustomDebugStringConvertible {
   @CodableIgnored
   public var data: Data!
 
+  /// Full box types (ISO 14496-12 §4.2) that include version + flags after the 8-byte header.
+  private static let fullBoxTypes: Set<String> = [
+    "mvhd", "mdhd", "tkhd", "hdlr",
+    "vmhd", "smhd", "nmhd", "hmhd",
+    "stts", "ctts", "stsc", "stsz", "stco", "co64", "stss", "stsd",
+    "dref", "url ", "urn ",
+    "elst", "meta",
+  ]
+
+  /// The size of the atom header in bytes (8 for standard boxes, 12 for full boxes).
+  public var headerSize: Int {
+    Atom.fullBoxTypes.contains(type) ? 12 : 8
+  }
+
+  /// The combined 24-bit flags value from a full box's version+flags field, or 0 for standard boxes.
+  public var flagsInt: Int {
+    guard headerSize == 12, data.count >= 4 else { return 0 }
+    let b0 = Int(data[data.startIndex + 1])
+    let b1 = Int(data[data.startIndex + 2])
+    let b2 = Int(data[data.startIndex + 3])
+    return (b0 << 16) | (b1 << 8) | b2
+  }
+
+  /// The children atoms to display, equivalent to `children` for most atoms.
+  /// Overridden by types (e.g. UDTA) whose displayable children are not stored in `children`.
+  public var displayChildren: [Atom] {
+    return children
+  }
+
+  /// Converts a duration in time-scale units to milliseconds.
+  public static func durationMs(_ duration: UInt64, timeScale: UInt32) -> UInt64 {
+    guard timeScale > 0 else { return 0 }
+    return (duration * 1000) / UInt64(timeScale)
+  }
+
   /// The children atoms or boxes, if applicable.
   public var children: [Atom] = []
 
@@ -84,6 +119,8 @@ public class Atom: Encodable, CustomDebugStringConvertible {
       return STCO(data: data)
     case "udta":
       return UDTA(data: data)
+    case "edts":
+      return EDTS(data: data)
     default:
       return Unknown(data: data, type: type)
     }
@@ -92,7 +129,7 @@ public class Atom: Encodable, CustomDebugStringConvertible {
   /// Get the atom type from the given four character string. Returns a hex
   /// representation of the type if the type is not a valid string.
   static func atomType(from typeBytes: Data) -> String {
-    guard let typeStr = String(data: typeBytes, encoding: .macOSRoman) else {
+    guard let typeStr = String(data: typeBytes, encoding: .isoLatin1) else {
       return "[\(typeBytes.hex)]"
     }
 

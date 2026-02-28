@@ -2,7 +2,7 @@ import Foundation
 
 extension Atom {
   public class MOOV: Atom {
-    init(data: Data) {
+    public init(data: Data) {
       super.init(data: data, type: "moov")
       self.children = try! Bamf.parse(data[(data.startIndex)..<data.endIndex])
     }
