@@ -251,6 +251,20 @@ import Testing
     #expect(hdlr?.handlerType == "mdir")
   }
 
+  @Test func parseSizeZeroAtomExtendsToEOF() throws {
+    // one atom with size=0 should consume the rest of the stream
+    let bytes: [UInt8] = [
+      0, 0, 0, 0,            // size = 0 (extends to EOF)
+      102, 114, 101, 101,    // type = "free"
+      1, 2, 3, 4, 5,
+    ]
+
+    let atoms = try Bamf.parse(Data(bytes))
+    #expect(atoms.count == 1)
+    #expect(atoms[0].type == "free")
+    #expect(atoms[0].data == Data([1, 2, 3, 4, 5]))
+  }
+
   // Data extracted from DJI_0007.MP4
   @Test func stco() {
     let data = Data(

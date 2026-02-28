@@ -35,6 +35,10 @@ public struct Bamf: Encodable {
     var atoms: [Atom] = []
 
     while cursor < data.endIndex {
+      guard cursor + 8 <= data.endIndex else {
+        throw Error.invalidAtomSize("Incomplete atom header at offset \(cursor)")
+      }
+
       var size: UInt64 = data[cursor..<(cursor + 4)].asInteger()
 
       // https://github.com/corkami/formats/blob/master/container/mp4.md
@@ -42,19 +46,28 @@ public struct Bamf: Encodable {
       var dataEndIndex = cursor + Int(size)
       if size == 0 {
         // Size = null → read until the end of the file
-        size = UInt64(data.endIndex) - UInt64(cursor + 8)
+        size = UInt64(data.endIndex - cursor)
         dataEndIndex = data.endIndex
       } else if size == 1 {
         // Size = 1 → extended size
+        guard cursor + 16 <= data.endIndex else {
+          throw Error.invalidAtomSize("Incomplete extended atom header at offset \(cursor)")
+        }
         size = data[(cursor + 8)..<(cursor + 16)].asInteger()
         dataStartIndex = cursor + 16
-        dataEndIndex = cursor + Int(size)
       }
 
-      guard size >= 8 else {
+      let headerSize = UInt64(dataStartIndex - cursor)
+      guard size >= headerSize else {
         print("Invalid atom size: \(size)")
         throw Error.invalidAtomSize("Invalid atom size \(size) at offset \(cursor)")
       }
+
+      guard size <= UInt64(data.endIndex - cursor) else {
+        throw Error.invalidAtomSize("Atom size \(size) at offset \(cursor) exceeds available data")
+      }
+
+      dataEndIndex = cursor + Int(size)
 
       // Get the atom type
       let atomType = Atom.atomType(from: Data(data[(cursor + 4)..<(cursor + 8)]))

@@ -9,7 +9,7 @@ extension Atom {
   public class UDTA: Atom {
     /// The parsed user-data entries contained in this box
     public var userData: [Atom] {
-      return try! Bamf.parse(data[data.startIndex..<data.endIndex], isUserData: true)
+      return (try? Bamf.parse(data[data.startIndex..<data.endIndex], isUserData: true)) ?? []
     }
 
     override public var displayChildren: [Atom] {
