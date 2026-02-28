@@ -26,7 +26,7 @@ import Testing
     #expect(atom.duration == 2628)
     #expect(atom.preferredRate == 1.0)
     #expect(atom.preferredVolume == 1.0)
-    // #expect(atom.nextTrackID == 0)
+    #expect(atom.nextTrackID == 3)
   }
 
   // Data extracted from DJI_0007.MP4
@@ -80,8 +80,21 @@ import Testing
     #expect(atom.version == 0)
     #expect(atom.flags == [0, 0, 0])
     #expect(atom.handlerType == "vide")
-    // Name may contain a leading non-printable byte from the QuickTime component subtype
-    #expect(atom.name.contains("DJI.AVC"))
+    // QuickTime Pascal strings are decoded without the leading length byte
+    #expect(atom.name == "DJI.AVC")
+  }
+
+  // Data extracted from DJI_0007.MP4
+  @Test func ftyp() {
+    let data = Data(
+      base64Encoded: "YXZjMSAUAgBhdmMxaXNvbQAAAAA=",
+      options: .ignoreUnknownCharacters
+    )!
+
+    let atom = Atom.FTYP(data: data)
+    #expect(atom.majorBrand == "avc1")
+    #expect(atom.minorVersion == "2014.2.0")
+    #expect(atom.compatibleBrands == ["avc1", "isom"])
   }
 
   // Data extracted from DJI_0007.MP4
