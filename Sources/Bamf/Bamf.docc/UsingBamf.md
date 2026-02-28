@@ -32,6 +32,28 @@ for atom in bamf.children {
 
 Use ``Atom/displayChildren`` when you want the most useful view of nested atoms, including types that expose child data through custom display logic.
 
+## Find an atom recursively
+
+Use ``Atom/findAtom(ofType:)`` to locate the first descendant atom matching a specific atom class:
+
+```swift
+if let moov = bamf.children.first(where: { $0 is Atom.MOOV }),
+   let mdia = moov.findAtom(ofType: Atom.MDIA.self) {
+  print("Found MDIA atom: \(mdia)")
+}
+```
+
+This performs a depth-first search over ``Atom/displayChildren`` and returns the first matching descendant, or `nil` if none is found.
+
+You can use the same approach for metadata payloads:
+
+```swift
+if let meta = bamf.children.first(where: { $0 is Atom.META }),
+   let ilstData = meta.findAtom(ofType: Atom.ILSTData.self) {
+  print("Metadata value: \(ilstData.value)")
+}
+```
+
 ## Parse raw data directly
 
 If you already have ISOBMFF bytes in memory, parse the data without going through a file URL:

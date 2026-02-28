@@ -47,6 +47,24 @@ public class Atom: Encodable, CustomDebugStringConvertible {
   /// The children atoms or boxes, if applicable.
   public var children: [Atom] = []
 
+  /// Recursively finds the first descendant atom matching the given atom class.
+  ///
+  /// - Parameter atomClass: The atom class to find, for example `MDIA.self`.
+  /// - Returns: The first matching descendant atom, or `nil` if no match is found.
+  public func findAtom<T: Atom>(ofType atomClass: T.Type) -> T? {
+    for child in displayChildren {
+      if let match = child as? T {
+        return match
+      }
+
+      if let match = child.findAtom(ofType: atomClass) {
+        return match
+      }
+    }
+
+    return nil
+  }
+
   /// A textual representation of this instance, suitable for debugging.
   public var debugDescription: String {
     "Atom(type=\(type), children=\(children.count))"

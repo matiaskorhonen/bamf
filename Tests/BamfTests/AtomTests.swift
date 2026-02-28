@@ -265,6 +265,37 @@ import Testing
     #expect(atoms[0].data == Data([1, 2, 3, 4, 5]))
   }
 
+  @Test func findAtomFindsDirectChildByClass() {
+    let root = Atom(data: Data(), type: "root")
+    let free = Atom.FREE(data: Data())
+    root.children = [free]
+
+    let match = root.findAtom(ofType: Atom.FREE.self)
+    #expect(match != nil)
+    #expect(match === free)
+  }
+
+  @Test func findAtomFindsNestedChildByClass() {
+    let root = Atom(data: Data(), type: "root")
+    let branch = Atom(data: Data(), type: "bran")
+    let free = Atom.FREE(data: Data())
+
+    branch.children = [free]
+    root.children = [branch]
+
+    let match = root.findAtom(ofType: Atom.FREE.self)
+    #expect(match != nil)
+    #expect(match === free)
+  }
+
+  @Test func findAtomReturnsNilWhenNoMatch() {
+    let root = Atom(data: Data(), type: "root")
+    root.children = [Atom.FREE(data: Data())]
+
+    let match = root.findAtom(ofType: Atom.STCO.self)
+    #expect(match == nil)
+  }
+
   // Data extracted from DJI_0007.MP4
   @Test func stco() {
     let data = Data(
