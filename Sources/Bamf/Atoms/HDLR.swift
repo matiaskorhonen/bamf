@@ -22,7 +22,15 @@ extension Atom {
     public var name: String {
       guard data.count > 24 else { return "" }
       let nameData = data[(data.startIndex + 24)..<data.endIndex]
-      // Name is null-terminated; strip trailing null bytes
+      guard !nameData.isEmpty else { return "" }
+      let firstByte = nameData[nameData.startIndex]
+      // Detect QuickTime Pascal string: first byte equals remaining byte count minus one
+      if Int(firstByte) == nameData.count - 1 {
+        let pascalData = nameData[(nameData.startIndex + 1)..<(nameData.startIndex + 1 + Int(firstByte))]
+        let trimmed = pascalData.prefix(while: { $0 != 0 })
+        return String(data: trimmed, encoding: .utf8) ?? ""
+      }
+      // ISO 14496-12: null-terminated UTF-8 string
       let trimmed = nameData.prefix(while: { $0 != 0 })
       return String(data: trimmed, encoding: .utf8) ?? ""
     }

@@ -7,7 +7,7 @@ extension Atom {
       return String(data: bytes, encoding: .utf8)
     }
     var minorVersion: String {
-      let bytes = [UInt8](data[(data.startIndex + 4)..<(data.startIndex + 12)])
+      let bytes = [UInt8](data[(data.startIndex + 4)..<(data.startIndex + 8)])
       let century = String(bytes[0], radix: 16, uppercase: true)
       let year = String(bytes[1], radix: 16, uppercase: true)
       let month = String(bytes[2], radix: 16, uppercase: true)
@@ -16,7 +16,7 @@ extension Atom {
       return [century + year, month, zero].joined(separator: ".")
     }
     var compatibleBrands: [String] {
-      var cursor = data.startIndex + 12
+      var cursor = data.startIndex + 8
       var brands: [String?] = []
       while cursor < data.endIndex {
         let bytes = data[cursor..<(cursor + 4)]

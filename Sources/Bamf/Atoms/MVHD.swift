@@ -17,35 +17,51 @@ extension Atom {
     }
     /// Movie creation datetime
     public var creationTime: Date {
+      if version == 1 {
+        let time: UInt64 = data[(data.startIndex + 4)..<(data.startIndex + 12)].asInteger()
+        return Date(timeIntervalSince1904: TimeInterval(time))
+      }
       return data[(data.startIndex + 4)..<(data.startIndex + 8)].asDate()
     }
     /// Movie modification datetime
     public var modificationTime: Date {
-      data[(data.startIndex + 8)..<(data.startIndex + 12)].asDate()
+      if version == 1 {
+        let time: UInt64 = data[(data.startIndex + 12)..<(data.startIndex + 20)].asInteger()
+        return Date(timeIntervalSince1904: TimeInterval(time))
+      }
+      return data[(data.startIndex + 8)..<(data.startIndex + 12)].asDate()
     }
     /// A time value that indicates the time scale for this movie—that is, the
     /// number of time units that pass per second in its time coordinate system
     public var timeScale: UInt32 {
-      let bytes = data[(data.startIndex + 12)..<(data.startIndex + 16)]
-      return bytes.asInteger()
+      let offset = version == 1 ? 20 : 12
+      return data[(data.startIndex + offset)..<(data.startIndex + offset + 4)].asInteger()
     }
     /// A time value that indicates the duration of the movie in time scale
     /// units, derived from the movie’s tracks, corresponding to the duration
     /// of the longest track in the movie
-    public var duration: UInt32 {
-      return data[(data.startIndex + 16)..<(data.startIndex + 20)].asInteger()
+    public var duration: UInt64 {
+      if version == 1 {
+        return data[(data.startIndex + 24)..<(data.startIndex + 32)].asInteger()
+      }
+      let d: UInt32 = data[(data.startIndex + 16)..<(data.startIndex + 20)].asInteger()
+      return UInt64(d)
     }
     /// The rate at which to play this movie (a value of 1.0 indicates normal rate)
     public var preferredRate: Decimal {
-      return data[(data.startIndex + 20)..<(data.startIndex + 24)].asFixedPoint(2, 2)
+      let offset = version == 1 ? 32 : 20
+      return data[(data.startIndex + offset)..<(data.startIndex + offset + 4)].asFixedPoint(2, 2)
     }
     /// How loud to play this movie’s sound (a value of 1.0 indicates full volume)
     public var preferredVolume: Decimal {
-      return data[(data.startIndex + 24)..<(data.startIndex + 26)].asFixedPoint(1, 1)
+      let offset = version == 1 ? 36 : 24
+      return data[(data.startIndex + offset)..<(data.startIndex + offset + 2)].asFixedPoint(1, 1)
     }
     /// The number of the Next Track ID
     public var nextTrackID: UInt32 {
-      return 0
+      let offset = version == 1 ? 108 : 96
+      guard data.count >= offset + 4 else { return 0 }
+      return data[(data.startIndex + offset)..<(data.startIndex + offset + 4)].asInteger()
     }
 
     override public var debugDescription: String {
