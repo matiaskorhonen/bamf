@@ -7,6 +7,11 @@
 import ArgumentParser
 import Bamf
 import Foundation
+#if canImport(Darwin)
+  import Darwin
+#elseif canImport(Glibc)
+  import Glibc
+#endif
 
 @main
 struct BamfCLI: ParsableCommand {
@@ -31,13 +36,17 @@ struct BamfCLI: ParsableCommand {
   @Option(name: .shortAndLong, help: "output format (text or json)")
   var format: OutputFormat = .text
 
+  @Flag(name: .customLong("no-color"), help: "Disable colored output")
+  var noColor: Bool = false
+
   mutating func run() throws {
+    let colorEnabled = !noColor && isatty(STDOUT_FILENO) != 0
     for url in source {
       let bamf = try Bamf(url)
 
       switch format {
       case .text:
-        print(formatAtomsText(bamf.children))
+        print(formatAtomsText(bamf.children, colorEnabled: colorEnabled))
       case .json:
         print(formatAtomsJSON(bamf.children))
       }
@@ -47,82 +56,89 @@ struct BamfCLI: ParsableCommand {
 
 // MARK: - Text format (similar to mp4dump)
 
-private func formatAtomsText(_ atoms: [Atom], indent: Int = 0) -> String {
-  atoms.map { formatAtomText($0, indent: indent) }.joined(separator: "\n")
+private func formatAtomsText(_ atoms: [Atom], indent: Int = 0, colorEnabled: Bool = false) -> String {
+  atoms.map { formatAtomText($0, indent: indent, colorEnabled: colorEnabled) }.joined(separator: "\n")
 }
 
-private func formatAtomText(_ atom: Atom, indent: Int = 0) -> String {
+private func formatAtomText(_ atom: Atom, indent: Int = 0, colorEnabled: Bool = false) -> String {
   let prefix = String(repeating: "  ", count: indent)
   // atom.data starts after the 8-byte size+type header; full-box version+flags are included in data
   let payloadSize = atom.data.count - (atom.headerSize - 8)
   var lines: [String] = []
   let propPrefix = "\(prefix)  "
 
-  var header = "\(prefix)[\(atom.type)] size=\(atom.headerSize)+\(payloadSize)"
+  let typeStr = ansi("[\(atom.type)]", ANSI.bold, ANSI.cyan, enabled: colorEnabled)
+  let sizeStr = ansi("size=\(atom.headerSize)+\(payloadSize)", ANSI.dim, enabled: colorEnabled)
+  var header = "\(prefix)\(typeStr) \(sizeStr)"
 
   // Append non-zero flags for full boxes
   if atom.headerSize == 12 {
     if atom.flagsInt != 0 {
-      header += ", flags=\(String(atom.flagsInt, radix: 16))"
+      header += ansi(", flags=\(String(atom.flagsInt, radix: 16))", ANSI.dim, enabled: colorEnabled)
     }
   }
   lines.append(header)
 
+  let prop: (String, Any) -> String = { key, value in
+    let keyStr = ansi(key, ANSI.yellow, enabled: colorEnabled)
+    return "\(propPrefix)\(keyStr) = \(value)"
+  }
+
   // Type-specific properties
   switch atom {
   case let a as Atom.FTYP:
-    lines.append("\(propPrefix)major_brand = \(a.majorBrand ?? "")")
-    lines.append("\(propPrefix)minor_version = \(a.minorVersion)")
+    lines.append(prop("major_brand", a.majorBrand ?? ""))
+    lines.append(prop("minor_version", a.minorVersion))
     for brand in a.compatibleBrands {
-      lines.append("\(propPrefix)compatible_brand = \(brand)")
+      lines.append(prop("compatible_brand", brand))
     }
 
   case let a as Atom.MVHD:
-    lines.append("\(propPrefix)timescale = \(a.timeScale)")
-    lines.append("\(propPrefix)duration = \(a.duration)")
-    lines.append("\(propPrefix)duration(ms) = \(Atom.durationMs(a.duration, timeScale: a.timeScale))")
+    lines.append(prop("timescale", a.timeScale))
+    lines.append(prop("duration", a.duration))
+    lines.append(prop("duration(ms)", Atom.durationMs(a.duration, timeScale: a.timeScale)))
 
   case let a as Atom.TKHD:
     let flagsInt = a.flagsInt
-    lines.append("\(propPrefix)enabled = \((flagsInt & 0x01) != 0 ? 1 : 0)")
-    lines.append("\(propPrefix)id = \(a.trackID)")
-    lines.append("\(propPrefix)duration = \(a.duration)")
-    lines.append("\(propPrefix)width = \(a.width)")
-    lines.append("\(propPrefix)height = \(a.height)")
+    lines.append(prop("enabled", (flagsInt & 0x01) != 0 ? 1 : 0))
+    lines.append(prop("id", a.trackID))
+    lines.append(prop("duration", a.duration))
+    lines.append(prop("width", a.width))
+    lines.append(prop("height", a.height))
 
   case let a as Atom.MDHD:
-    lines.append("\(propPrefix)timescale = \(a.timeScale)")
-    lines.append("\(propPrefix)duration = \(a.duration)")
-    lines.append("\(propPrefix)duration(ms) = \(Atom.durationMs(a.duration, timeScale: a.timeScale))")
-    lines.append("\(propPrefix)language = \(a.language)")
+    lines.append(prop("timescale", a.timeScale))
+    lines.append(prop("duration", a.duration))
+    lines.append(prop("duration(ms)", Atom.durationMs(a.duration, timeScale: a.timeScale)))
+    lines.append(prop("language", a.language))
 
   case let a as Atom.HDLR:
-    lines.append("\(propPrefix)handler_type = \(a.handlerType)")
-    lines.append("\(propPrefix)handler_name = \(a.name)")
+    lines.append(prop("handler_type", a.handlerType))
+    lines.append(prop("handler_name", a.name))
 
   case let a as Atom.VMHD:
     let opcolorStr = a.opcolor.map { String(format: "%04x", $0) }.joined(separator: ",")
-    lines.append("\(propPrefix)graphics_mode = \(a.graphicsMode)")
-    lines.append("\(propPrefix)op_color = \(opcolorStr)")
+    lines.append(prop("graphics_mode", a.graphicsMode))
+    lines.append(prop("op_color", opcolorStr))
 
   case let a as Atom.STTS:
-    lines.append("\(propPrefix)entry_count = \(a.entryCount)")
+    lines.append(prop("entry_count", a.entryCount))
 
   case let a as Atom.STSC:
-    lines.append("\(propPrefix)entry_count = \(a.entryCount)")
+    lines.append(prop("entry_count", a.entryCount))
 
   case let a as Atom.STSS:
-    lines.append("\(propPrefix)entry_count = \(a.entryCount)")
+    lines.append(prop("entry_count", a.entryCount))
 
   case let a as Atom.STCO:
-    lines.append("\(propPrefix)entry_count = \(a.entryCount)")
+    lines.append(prop("entry_count", a.entryCount))
 
   case let a as Atom.STSZ:
-    lines.append("\(propPrefix)sample_size = \(a.sampleSize)")
-    lines.append("\(propPrefix)sample_count = \(a.sampleCount)")
+    lines.append(prop("sample_size", a.sampleSize))
+    lines.append(prop("sample_count", a.sampleCount))
 
   case let a as Atom.STSD:
-    lines.append("\(propPrefix)entry_count = \(a.entryCount)")
+    lines.append(prop("entry_count", a.entryCount))
 
   default:
     break
@@ -130,7 +146,7 @@ private func formatAtomText(_ atom: Atom, indent: Int = 0) -> String {
 
   // Children
   for child in atom.displayChildren {
-    lines.append(formatAtomText(child, indent: indent + 1))
+    lines.append(formatAtomText(child, indent: indent + 1, colorEnabled: colorEnabled))
   }
 
   return lines.joined(separator: "\n")
