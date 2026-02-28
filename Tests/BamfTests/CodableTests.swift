@@ -5,7 +5,7 @@ import Testing
 
 @Suite struct CodableTests {
   @Test func encodable() throws {
-    let url = Bundle.module.url(forResource: "dji_small", withExtension: "mp4")!
+    let url = Bundle.module.url(forResource: "dji_small", withExtension: "mp4", subdirectory: "Fixtures")!
     let bamf = try Bamf(url)
 
     let encoder = JSONEncoder()

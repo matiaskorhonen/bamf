@@ -5,7 +5,7 @@ import Testing
 
 @Suite struct BamfTests {
   @Test func mpeg4() throws {
-    let urls = Bundle.module.urls(forResourcesWithExtension: "mp4", subdirectory: nil)
+    let urls = Bundle.module.urls(forResourcesWithExtension: "mp4", subdirectory: "Fixtures")
 
     #expect(urls != nil, "there should be test MP4 files in the test bundle")
     #expect(urls!.count == 2)
@@ -17,7 +17,7 @@ import Testing
   }
 
   @Test func quicktime() throws {
-    let urls = Bundle.module.urls(forResourcesWithExtension: "mov", subdirectory: nil)
+    let urls = Bundle.module.urls(forResourcesWithExtension: "mov", subdirectory: "Fixtures")
 
     #expect(urls != nil, "there should be test MOV files in the test bundle")
     #expect(urls!.count == 1)
