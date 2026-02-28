@@ -23,6 +23,27 @@ public class Atom: Encodable, CustomDebugStringConvertible {
     Atom.fullBoxTypes.contains(type) ? 12 : 8
   }
 
+  /// The combined 24-bit flags value from a full box's version+flags field, or 0 for standard boxes.
+  public var flagsInt: Int {
+    guard headerSize == 12, data.count >= 4 else { return 0 }
+    let b0 = Int(data[data.startIndex + 1])
+    let b1 = Int(data[data.startIndex + 2])
+    let b2 = Int(data[data.startIndex + 3])
+    return (b0 << 16) | (b1 << 8) | b2
+  }
+
+  /// The children atoms to display, equivalent to `children` for most atoms.
+  /// Overridden by types (e.g. UDTA) whose displayable children are not stored in `children`.
+  public var displayChildren: [Atom] {
+    return children
+  }
+
+  /// Converts a duration in time-scale units to milliseconds.
+  public static func durationMs(_ duration: UInt64, timeScale: UInt32) -> UInt64 {
+    guard timeScale > 0 else { return 0 }
+    return (duration * 1000) / UInt64(timeScale)
+  }
+
   /// The children atoms or boxes, if applicable.
   public var children: [Atom] = []
 

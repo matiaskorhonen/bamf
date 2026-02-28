@@ -8,6 +8,10 @@ extension Atom {
       return try! Bamf.parse(data[data.startIndex..<data.endIndex], isUserData: true)
     }
 
+    override public var displayChildren: [Atom] {
+      return userData
+    }
+
     override public var debugDescription: String {
       "Atom(type=\(type), children=\(children.count), userData=\(userData))"
     }

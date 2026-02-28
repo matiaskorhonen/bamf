@@ -62,9 +62,8 @@ private func formatAtomText(_ atom: Atom, indent: Int = 0) -> String {
 
   // Append non-zero flags for full boxes
   if atom.headerSize == 12 {
-    let flagsInt = combinedFlagsInt(atom)
-    if flagsInt != 0 {
-      header += ", flags=\(String(flagsInt, radix: 16))"
+    if atom.flagsInt != 0 {
+      header += ", flags=\(String(atom.flagsInt, radix: 16))"
     }
   }
   lines.append(header)
@@ -81,10 +80,10 @@ private func formatAtomText(_ atom: Atom, indent: Int = 0) -> String {
   case let a as Atom.MVHD:
     lines.append("\(propPrefix)timescale = \(a.timeScale)")
     lines.append("\(propPrefix)duration = \(a.duration)")
-    lines.append("\(propPrefix)duration(ms) = \(durationMs(a.duration, timeScale: a.timeScale))")
+    lines.append("\(propPrefix)duration(ms) = \(Atom.durationMs(a.duration, timeScale: a.timeScale))")
 
   case let a as Atom.TKHD:
-    let flagsInt = combinedFlagsInt(a)
+    let flagsInt = a.flagsInt
     lines.append("\(propPrefix)enabled = \((flagsInt & 0x01) != 0 ? 1 : 0)")
     lines.append("\(propPrefix)id = \(a.trackID)")
     lines.append("\(propPrefix)duration = \(a.duration)")
@@ -94,7 +93,7 @@ private func formatAtomText(_ atom: Atom, indent: Int = 0) -> String {
   case let a as Atom.MDHD:
     lines.append("\(propPrefix)timescale = \(a.timeScale)")
     lines.append("\(propPrefix)duration = \(a.duration)")
-    lines.append("\(propPrefix)duration(ms) = \(durationMs(a.duration, timeScale: a.timeScale))")
+    lines.append("\(propPrefix)duration(ms) = \(Atom.durationMs(a.duration, timeScale: a.timeScale))")
     lines.append("\(propPrefix)language = \(a.language)")
 
   case let a as Atom.HDLR:
@@ -130,7 +129,7 @@ private func formatAtomText(_ atom: Atom, indent: Int = 0) -> String {
   }
 
   // Children
-  for child in atomChildren(atom) {
+  for child in atom.displayChildren {
     lines.append(formatAtomText(child, indent: indent + 1))
   }
 
@@ -168,12 +167,11 @@ private func atomToDict(_ atom: Atom) -> [String: Any] {
   case let a as Atom.MVHD:
     dict["timescale"] = a.timeScale
     dict["duration"] = a.duration
-    dict["duration(ms)"] = durationMs(a.duration, timeScale: a.timeScale)
+    dict["duration(ms)"] = Atom.durationMs(a.duration, timeScale: a.timeScale)
 
   case let a as Atom.TKHD:
-    let flagsInt = combinedFlagsInt(a)
-    dict["flags"] = flagsInt
-    dict["enabled"] = (flagsInt & 0x01) != 0 ? 1 : 0
+    dict["flags"] = a.flagsInt
+    dict["enabled"] = (a.flagsInt & 0x01) != 0 ? 1 : 0
     dict["id"] = a.trackID
     dict["duration"] = a.duration
     dict["width"] = Double(truncating: a.width as NSDecimalNumber)
@@ -182,7 +180,7 @@ private func atomToDict(_ atom: Atom) -> [String: Any] {
   case let a as Atom.MDHD:
     dict["timescale"] = a.timeScale
     dict["duration"] = a.duration
-    dict["duration(ms)"] = durationMs(a.duration, timeScale: a.timeScale)
+    dict["duration(ms)"] = Atom.durationMs(a.duration, timeScale: a.timeScale)
     dict["language"] = a.language
 
   case let a as Atom.HDLR:
@@ -190,8 +188,7 @@ private func atomToDict(_ atom: Atom) -> [String: Any] {
     dict["handler_name"] = a.name
 
   case let a as Atom.VMHD:
-    let flagsInt = combinedFlagsInt(a)
-    dict["flags"] = flagsInt
+    dict["flags"] = a.flagsInt
     dict["graphics_mode"] = a.graphicsMode
     dict["op_color"] = a.opcolor.map { String(format: "%04x", $0) }.joined(separator: ",")
 
@@ -218,36 +215,11 @@ private func atomToDict(_ atom: Atom) -> [String: Any] {
     break
   }
 
-  let children = atomChildren(atom)
+  let children = atom.displayChildren
   if !children.isEmpty {
     dict["children"] = children.map { atomToDict($0) }
   }
 
   return dict
-}
-
-// MARK: - Helpers
-
-/// Returns the children of an atom, handling special cases like UDTA.
-private func atomChildren(_ atom: Atom) -> [Atom] {
-  if let udta = atom as? Atom.UDTA {
-    return udta.userData
-  }
-  return atom.children
-}
-
-/// Returns the combined 24-bit flags integer from a full box atom's flags bytes.
-private func combinedFlagsInt(_ atom: Atom) -> Int {
-  guard atom.data.count >= 4 else { return 0 }
-  let b0 = Int(atom.data[atom.data.startIndex + 1])
-  let b1 = Int(atom.data[atom.data.startIndex + 2])
-  let b2 = Int(atom.data[atom.data.startIndex + 3])
-  return (b0 << 16) | (b1 << 8) | b2
-}
-
-/// Returns duration in milliseconds (truncated).
-private func durationMs(_ duration: UInt64, timeScale: UInt32) -> UInt64 {
-  guard timeScale > 0 else { return 0 }
-  return (duration * 1000) / UInt64(timeScale)
 }
 
