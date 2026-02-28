@@ -48,6 +48,15 @@ for atom in bamf.children {
 }
 ```
 
+## Documentation
+
+The library is fully documented with [DocC](https://www.swift.org/documentation/docc/) compatible comments. You can generate and preview the documentation locally using the [Swift-DocC Plugin](https://apple.github.io/swift-docc-plugin/documentation/swiftdoccplugin/) (already included as a dependency):
+
+```sh
+# Preview the documentation in a browser
+swift package --disable-sandbox preview-documentation --target Bamf
+```
+
 ## License
 
 MIT License. See <LICENSE> file for details.
