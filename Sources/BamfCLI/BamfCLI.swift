@@ -140,6 +140,13 @@ private func formatAtomText(_ atom: Atom, indent: Int = 0, colorEnabled: Bool = 
   case let a as Atom.STSD:
     lines.append(prop("entry_count", a.entryCount))
 
+  case let a as Atom.ILSTData:
+    lines.append(prop("type", a.dataType))
+    lines.append(prop("lang", a.locale))
+    if let value = a.value {
+      lines.append(prop("value", value))
+    }
+
   default:
     break
   }
@@ -226,6 +233,13 @@ private func atomToDict(_ atom: Atom) -> [String: Any] {
 
   case let a as Atom.STSD:
     dict["entry_count"] = a.entryCount
+
+  case let a as Atom.ILSTData:
+    dict["type"] = a.dataType
+    dict["lang"] = a.locale
+    if let value = a.value {
+      dict["value"] = value
+    }
 
   default:
     break

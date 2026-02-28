@@ -62,7 +62,7 @@ public struct Bamf: Encodable {
       // Get the data without the size and type fields
       let atomData = data[dataStartIndex..<(dataEndIndex)]
 
-      if isUserData {
+      if isUserData && atomType != "meta" {
         let atom = Atom.UserData(data: atomData, type: atomType)
         atoms.append(atom)
       } else {

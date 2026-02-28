@@ -181,6 +181,76 @@ import Testing
     #expect(sizes.count == 63)
   }
 
+  @Test func ilstData() {
+    // type=1 (UTF-8), locale=0, value="hello"
+    let data = Data([0, 0, 0, 1, 0, 0, 0, 0, 104, 101, 108, 108, 111])
+
+    let atom = Atom.ILSTData(data: data)
+    #expect(atom.dataType == 1)
+    #expect(atom.locale == 0)
+    #expect(atom.value == "hello")
+  }
+
+  @Test func ilst() {
+    // Build a minimal ilst body: one .cmt item containing one data sub-atom
+    // data atom: size=21, type="data", dataType=1, locale=0, "hello"
+    let dataAtomBytes: [UInt8] = [
+      0, 0, 0, 21,           // size = 21
+      100, 97, 116, 97,      // type = "data"
+      0, 0, 0, 1,            // dataType = 1 (UTF-8)
+      0, 0, 0, 0,            // locale = 0
+      104, 101, 108, 108, 111,  // "hello"
+    ]
+    // .cmt item: size=29, type=".cmt", then the data atom
+    var cmtBytes: [UInt8] = [
+      0, 0, 0, 29,           // size = 29
+      46, 99, 109, 116,      // type = ".cmt"
+    ]
+    cmtBytes.append(contentsOf: dataAtomBytes)
+
+    let atom = Atom.ILST(data: Data(cmtBytes))
+    #expect(atom.children.count == 1)
+    #expect(atom.children[0].type == ".cmt")
+    #expect(atom.children[0].children.count == 1)
+    let dataAtom = atom.children[0].children[0] as? Atom.ILSTData
+    #expect(dataAtom != nil)
+    #expect(dataAtom?.dataType == 1)
+    #expect(dataAtom?.locale == 0)
+    #expect(dataAtom?.value == "hello")
+  }
+
+  @Test func meta() {
+    // hdlr atom: size=33, type="hdlr", version+flags=0, pre_defined=0,
+    //            handler_type="mdir", reserved=0×12, name="" (null byte)
+    let hdlrBytes: [UInt8] = [
+      0, 0, 0, 33,           // size = 33
+      104, 100, 108, 114,    // type = "hdlr"
+      0, 0, 0, 0,            // version + flags
+      0, 0, 0, 0,            // pre_defined
+      109, 100, 105, 114,    // handler_type = "mdir"
+      0, 0, 0, 0,            // reserved[0]
+      0, 0, 0, 0,            // reserved[1]
+      0, 0, 0, 0,            // reserved[2]
+      0,                     // name = "" (null terminator)
+    ]
+    // ilst atom: size=8 (empty), type="ilst"
+    let ilstBytes: [UInt8] = [
+      0, 0, 0, 8,            // size = 8
+      105, 108, 115, 116,    // type = "ilst"
+    ]
+    // meta data: version+flags (4 bytes) + hdlr atom + ilst atom
+    var metaData: [UInt8] = [0, 0, 0, 0]
+    metaData.append(contentsOf: hdlrBytes)
+    metaData.append(contentsOf: ilstBytes)
+
+    let atom = Atom.META(data: Data(metaData))
+    #expect(atom.children.count == 2)
+    #expect(atom.children[0] is Atom.HDLR)
+    #expect(atom.children[1] is Atom.ILST)
+    let hdlr = atom.children[0] as? Atom.HDLR
+    #expect(hdlr?.handlerType == "mdir")
+  }
+
   // Data extracted from DJI_0007.MP4
   @Test func stco() {
     let data = Data(

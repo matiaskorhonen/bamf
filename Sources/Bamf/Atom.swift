@@ -121,6 +121,12 @@ public class Atom: Encodable, CustomDebugStringConvertible {
       return UDTA(data: data)
     case "edts":
       return EDTS(data: data)
+    case "meta":
+      return META(data: data)
+    case "ilst":
+      return ILST(data: data)
+    case "data":
+      return ILSTData(data: data)
     default:
       return Unknown(data: data, type: type)
     }
