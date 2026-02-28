@@ -1,7 +1,7 @@
 import Foundation
 
 /// A struct representing an ISOBMFF file
-public struct Bamf: Encodable {
+public struct Bamf: Encodable, AtomSearchable {
   /// Errors that can be thrown when parsing ISOBMFF data.
   enum Error: Swift.Error {
     /// The atom size field contains an invalid value.
@@ -15,6 +15,11 @@ public struct Bamf: Encodable {
 
   /// The root atoms of the file
   public let children: [Atom]
+
+  /// Children to traverse when recursively searching for atoms.
+  public var atomSearchChildren: [Atom] {
+    children
+  }
 
   /// Create a new `Bamf` instance from a local file URL
   ///

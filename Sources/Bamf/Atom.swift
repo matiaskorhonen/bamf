@@ -1,7 +1,7 @@
 import Foundation
 
 /// A struct representing an ISOBMFF atom or box.
-public class Atom: Encodable, CustomDebugStringConvertible {
+public class Atom: Encodable, CustomDebugStringConvertible, AtomSearchable {
   /// A four character string representing the type of the atom.
   public let type: String
 
@@ -47,22 +47,9 @@ public class Atom: Encodable, CustomDebugStringConvertible {
   /// The children atoms or boxes, if applicable.
   public var children: [Atom] = []
 
-  /// Recursively finds the first descendant atom matching the given atom class.
-  ///
-  /// - Parameter atomClass: The atom class to find, for example `MDIA.self`.
-  /// - Returns: The first matching descendant atom, or `nil` if no match is found.
-  public func findAtom<T: Atom>(ofType atomClass: T.Type) -> T? {
-    for child in displayChildren {
-      if let match = child as? T {
-        return match
-      }
-
-      if let match = child.findAtom(ofType: atomClass) {
-        return match
-      }
-    }
-
-    return nil
+  /// Children to traverse when recursively searching for atoms.
+  public var atomSearchChildren: [Atom] {
+    displayChildren
   }
 
   /// A textual representation of this instance, suitable for debugging.
