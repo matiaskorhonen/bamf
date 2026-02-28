@@ -40,7 +40,9 @@ extension Atom {
         let firstChunk: UInt32 = data[offset..<(offset + 4)].asInteger()
         let samplesPerChunk: UInt32 = data[(offset + 4)..<(offset + 8)].asInteger()
         let sampleDescriptionIndex: UInt32 = data[(offset + 8)..<(offset + 12)].asInteger()
-        result.append(Entry(firstChunk: firstChunk, samplesPerChunk: samplesPerChunk, sampleDescriptionIndex: sampleDescriptionIndex))
+        result.append(
+          Entry(
+            firstChunk: firstChunk, samplesPerChunk: samplesPerChunk, sampleDescriptionIndex: sampleDescriptionIndex))
         offset += 12
       }
       return result

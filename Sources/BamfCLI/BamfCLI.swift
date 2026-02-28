@@ -7,6 +7,7 @@
 import ArgumentParser
 import Bamf
 import Foundation
+
 #if canImport(Darwin)
   import Darwin
 #elseif canImport(Glibc)
@@ -252,4 +253,3 @@ private func atomToDict(_ atom: Atom) -> [String: Any] {
 
   return dict
 }
-
