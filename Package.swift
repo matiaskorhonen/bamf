@@ -38,7 +38,7 @@ let package = Package(
         "Bamf"
       ],
       resources: [
-        .copy("Resources")
+        .copy("Fixtures")
       ]),
     .testTarget(
       name: "BamfCLITests",

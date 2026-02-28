@@ -36,7 +36,7 @@ https://github.com/matiaskorhonen/bamf.git
 ### Usage
 
 ```swift
-let url = URL(fileURLWithPath: "Tests/BamfTests/Resources/DJI_0007.MP4")
+let url = URL(fileURLWithPath: "Tests/BamfTests/Fixtures/DJI_0007.MP4")
 let bamf = Bamf(url)
 
 for atom in bamf.children {
