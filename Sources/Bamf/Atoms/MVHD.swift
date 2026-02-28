@@ -1,7 +1,9 @@
 import Foundation
 
 extension Atom {
-  // https://xhelmboyx.tripod.com/formats/mp4-layout.txt
+  /// Movie Header Box (ISO 14496-12 §8.3.1)
+  ///
+  /// See also: https://xhelmboyx.tripod.com/formats/mp4-layout.txt
   public class MVHD: Atom {
     /// If version is 1 then date and duration values are 8 bytes in length
     public var version: UInt8 {

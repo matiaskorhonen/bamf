@@ -7,6 +7,7 @@ extension Atom {
     public var version: UInt8 {
       return UInt8(data[data.startIndex])
     }
+    /// The flags field of this full box
     public var flags: [UInt8] {
       [
         UInt8(data[data.startIndex + 1]),

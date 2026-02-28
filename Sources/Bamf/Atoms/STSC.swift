@@ -3,6 +3,7 @@ import Foundation
 extension Atom {
   /// Sample-to-Chunk Box (ISO 14496-12 §8.7.4)
   public class STSC: Atom {
+    /// A single entry in the sample-to-chunk table
     public struct Entry {
       /// The index of the first chunk in the run
       public let firstChunk: UInt32
@@ -12,9 +13,11 @@ extension Atom {
       public let sampleDescriptionIndex: UInt32
     }
 
+    /// The version of this full box (should be 0)
     public var version: UInt8 {
       return UInt8(data[data.startIndex])
     }
+    /// The flags field of this full box
     public var flags: [UInt8] {
       [
         UInt8(data[data.startIndex + 1]),
@@ -22,9 +25,11 @@ extension Atom {
         UInt8(data[data.startIndex + 3]),
       ]
     }
+    /// Number of entries in the sample-to-chunk table
     public var entryCount: UInt32 {
       return data[(data.startIndex + 4)..<(data.startIndex + 8)].asInteger()
     }
+    /// The list of sample-to-chunk table entries
     public var entries: [Entry] {
       var result: [Entry] = []
       let count = Int(entryCount)

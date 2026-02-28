@@ -1,8 +1,10 @@
 import Foundation
 
 extension Atom {
+  /// A generic user-data entry atom (e.g. `©nam`, `©day`) parsed from a `udta` box.
   class UserData: Atom {
 
+    /// The string encoding inferred from the language code, or `nil` if the atom is not a string atom.
     var stringEncoding: String.Encoding? {
       guard let value = self.languageCodeValue else {
         return nil
@@ -33,12 +35,13 @@ extension Atom {
       return data[(data.startIndex)..<(data.startIndex + 2)].asInteger()
     }
 
-    // Returns the string data without any null bytes and skipping over the langauge and size fields
+    // Returns the string data without any null bytes and skipping over the language and size fields
     private var stringData: Data {
       let lastNonNull = data.lastIndex(where: { $0 != 0 }) ?? data.endIndex
       return data[(data.startIndex + 4)..<(lastNonNull)]
     }
 
+    /// The decoded string value of this atom, or `nil` if the atom does not contain a string.
     var stringValue: String? {
       guard let encoding = stringEncoding else {
         return nil
@@ -52,12 +55,14 @@ extension Atom {
       return String(data: stringData, encoding: encoding)
     }
 
+    /// The date value of this atom, or `nil` if the atom does not contain a 4-byte Mac epoch timestamp.
     var dateValue: Date? {
       guard data.count == 4 else { return nil }
 
       return data.asDate()
     }
 
+    /// The integer value of this atom, or `nil` if the data is larger than 64 bits.
     var integerValue: UInt64? {
       // Only handle ≤ 64-bit data as a possible integer
       guard data.count <= (UInt64.bitWidth / UInt8.bitWidth) else { return nil }

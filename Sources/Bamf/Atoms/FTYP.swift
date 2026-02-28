@@ -1,11 +1,14 @@
 import Foundation
 
 extension Atom {
+  /// File Type Box (ISO 14496-12 §4.3)
   public class FTYP: Atom {
+    /// The major brand of the file (e.g. `"mp41"`, `"isom"`)
     public var majorBrand: String? {
       let bytes = data[(data.startIndex)..<(data.startIndex + 4)]
       return String(data: bytes, encoding: .utf8)
     }
+    /// The minor version of the file, encoded as a date string (e.g. `"0000.00.00"`)
     public var minorVersion: String {
       let bytes = [UInt8](data[(data.startIndex + 4)..<(data.startIndex + 8)])
       let century = String(bytes[0], radix: 16, uppercase: true)
@@ -15,6 +18,7 @@ extension Atom {
 
       return [century + year, month, zero].joined(separator: ".")
     }
+    /// A list of additional brands the file is compatible with
     public var compatibleBrands: [String] {
       var cursor = data.startIndex + 8
       var brands: [String?] = []

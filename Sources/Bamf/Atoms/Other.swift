@@ -14,5 +14,6 @@ extension Atom {
       super.init(data: data, type: "stsd")
     }
   }
+  /// A catch-all class representing an atom or box type that has no specific implementation.
   public class Unknown: Atom {}
 }

@@ -3,9 +3,11 @@ import Foundation
 extension Atom {
   /// Sample Size Box (ISO 14496-12 §8.7.3.2)
   public class STSZ: Atom {
+    /// The version of this full box (should be 0)
     public var version: UInt8 {
       return UInt8(data[data.startIndex])
     }
+    /// The flags field of this full box
     public var flags: [UInt8] {
       [
         UInt8(data[data.startIndex + 1]),

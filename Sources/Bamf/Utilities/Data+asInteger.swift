@@ -1,6 +1,9 @@
 import Foundation
 
 extension Data {
+  /// Interprets the bytes of the receiver as a big-endian fixed-width integer.
+  ///
+  /// - Returns: The integer value represented by the bytes.
   func asInteger<T: FixedWidthInteger>() -> T {
     let bytes = [UInt8](self)
 
