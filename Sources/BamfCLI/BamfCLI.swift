@@ -16,21 +16,22 @@ struct BamfCLI: ParsableCommand {
         Output parsed data from ISOBMFF files as parsed by Bamf!
 
         Mostly for debugging and testing purposes.
-      """
+      """,
+    helpNames: .shortAndLong
   )
 
   @Argument(help: "source MP4 file(s)", transform: URL.init(fileURLWithPath:))
   var source: [URL] = []
 
-  mutating func run() {
+  mutating func run() throws {
     for url in source {
-      let bamf = Bamf(url)
+      let bamf = try Bamf(url)
 
       let encoder = JSONEncoder()
       encoder.outputFormatting = .prettyPrinted
       encoder.dateEncodingStrategy = .iso8601
 
-      let data = try! encoder.encode(bamf)
+      let data = try encoder.encode(bamf)
       let json = String(data: data, encoding: .utf8)!
 
       print(json)

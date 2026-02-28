@@ -15,9 +15,9 @@ public struct Bamf: Encodable {
   /// Create a new `Bamf` instance from a local file URL
   ///
   /// - Parameter url: A local file URL to a MP4, MOV, or other ISOBMFF file
-  public init(_ url: URL) {
-    let data = try! Data(contentsOf: url, options: .alwaysMapped)
-    children = try! Bamf.parse(data)
+  public init(_ url: URL) throws {
+    let data = try Data(contentsOf: url, options: .alwaysMapped)
+    children = try Bamf.parse(data)
     self.data = data
   }
 
