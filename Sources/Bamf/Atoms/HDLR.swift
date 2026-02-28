@@ -3,9 +3,11 @@ import Foundation
 extension Atom {
   /// Handler Reference Box (ISO 14496-12 §8.4.3)
   public class HDLR: Atom {
+    /// The version of this full box (should be 0)
     public var version: UInt8 {
       return UInt8(data[data.startIndex])
     }
+    /// The flags field of this full box
     public var flags: [UInt8] {
       [
         UInt8(data[data.startIndex + 1]),

@@ -2,7 +2,11 @@ import Foundation
 
 /// A struct representing an ISOBMFF file
 public struct Bamf: Encodable {
+  /// Errors that can be thrown when parsing ISOBMFF data.
   enum Error: Swift.Error {
+    /// The atom size field contains an invalid value.
+    ///
+    /// - Parameter description: A human-readable description of the error including the invalid size and file offset.
     case invalidAtomSize(String)
   }
 

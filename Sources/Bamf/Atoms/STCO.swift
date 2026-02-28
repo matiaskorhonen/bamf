@@ -3,9 +3,11 @@ import Foundation
 extension Atom {
   /// Chunk Offset Box (ISO 14496-12 §8.7.5)
   public class STCO: Atom {
+    /// The version of this full box (should be 0)
     public var version: UInt8 {
       return UInt8(data[data.startIndex])
     }
+    /// The flags field of this full box
     public var flags: [UInt8] {
       [
         UInt8(data[data.startIndex + 1]),
@@ -13,6 +15,7 @@ extension Atom {
         UInt8(data[data.startIndex + 3]),
       ]
     }
+    /// Number of chunk offset entries
     public var entryCount: UInt32 {
       return data[(data.startIndex + 4)..<(data.startIndex + 8)].asInteger()
     }

@@ -3,6 +3,7 @@ import Foundation
 extension Atom {
   /// (Decoding) Time-to-Sample Box (ISO 14496-12 §8.6.1.2)
   public class STTS: Atom {
+    /// A single entry in the time-to-sample table
     public struct Entry {
       /// Number of consecutive samples with the same delta
       public let sampleCount: UInt32
@@ -10,9 +11,11 @@ extension Atom {
       public let sampleDelta: UInt32
     }
 
+    /// The version of this full box (should be 0)
     public var version: UInt8 {
       return UInt8(data[data.startIndex])
     }
+    /// The flags field of this full box
     public var flags: [UInt8] {
       [
         UInt8(data[data.startIndex + 1]),
@@ -20,9 +23,11 @@ extension Atom {
         UInt8(data[data.startIndex + 3]),
       ]
     }
+    /// Number of entries in the time-to-sample table
     public var entryCount: UInt32 {
       return data[(data.startIndex + 4)..<(data.startIndex + 8)].asInteger()
     }
+    /// The list of time-to-sample table entries
     public var entries: [Entry] {
       var result: [Entry] = []
       let count = Int(entryCount)
