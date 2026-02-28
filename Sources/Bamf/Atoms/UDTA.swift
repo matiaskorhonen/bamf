@@ -1,18 +1,18 @@
 import Foundation
 
 extension Atom {
-  class UDTA: Atom {
+  public class UDTA: Atom {
     // https://developer.apple.com/documentation/quicktime-file-format/user_data_atom
     // https://developer.apple.com/documentation/quicktime-file-format/user_data_atoms
-    var userData: [Atom] {
+    public var userData: [Atom] {
       return try! Bamf.parse(data[data.startIndex..<data.endIndex], isUserData: true)
     }
 
-    override var debugDescription: String {
+    override public var debugDescription: String {
       "Atom(type=\(type), children=\(children.count), userData=\(userData))"
     }
 
-    init(data: Data) {
+    public init(data: Data) {
       super.init(data: data, type: "udta")
     }
 
@@ -21,7 +21,7 @@ extension Atom {
       case userData
     }
 
-    override func encode(to encoder: Encoder) throws {
+    override public func encode(to encoder: Encoder) throws {
       try super.encode(to: encoder)
       var container = encoder.container(keyedBy: CodingKeys.self)
 
