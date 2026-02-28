@@ -40,5 +40,10 @@ let package = Package(
       resources: [
         .copy("Resources")
       ]),
+    .testTarget(
+      name: "BamfCLITests",
+      dependencies: [
+        "BamfCLI"
+      ]),
   ]
 )
