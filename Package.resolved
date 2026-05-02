@@ -1,5 +1,5 @@
 {
-  "originHash" : "976eb9e87fbe731e1188755d31130dcbd9e973275894376d6c27fe56c8d4e343",
+  "originHash" : "3aa3fd1427927a7574faa29aa7e4c782d63eba54eb43931d750b5f1db935b4cb",
   "pins" : [
     {
       "identity" : "lefthook-plugin",
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-docc-plugin",
       "state" : {
-        "revision" : "e977f65879f82b375a044c8837597f690c067da6",
-        "version" : "1.4.6"
+        "revision" : "647c708be89f834fa6a6d4945442793a77ddf5b6",
+        "version" : "1.5.0"
       }
     },
     {
