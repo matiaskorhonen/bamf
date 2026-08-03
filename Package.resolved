@@ -1,13 +1,13 @@
 {
-  "originHash" : "fa4b0387d41c885275476473fbf7429f836be279ef71984a6859fa943d3d8d88",
+  "originHash" : "b0da907df924b535f13a946c1aa62eaf5da1a125f514191e45d2bc50dfac8c2f",
   "pins" : [
     {
       "identity" : "lefthook-plugin",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/csjones/lefthook-plugin.git",
       "state" : {
-        "revision" : "d2aa660403eb28f124c5a1b07e04ffe43d2e7940",
-        "version" : "2.1.6"
+        "revision" : "89b44879d0b2275c38cfb1870e8b15d49e3f8904",
+        "version" : "2.1.10"
       }
     },
     {
